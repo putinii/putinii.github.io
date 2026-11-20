@@ -1052,7 +1052,17 @@ route();
     document.title = d.title + " – " + CONFIG.siteName;
   };
 
-  fetch("data.json", { cache: "no-cache" }).then(r => r.json()).then(j => { PV = j; route(); }).catch(() => {});
+  fetch("data.json", { cache: "no-cache" }).then(r => r.json()).then(j => {
+    PV = j;
+    (j.__cats || []).forEach(c => { if (!EXAMS.find(e => e.key === c.key)) EXAMS.push(c); });
+    (j.__new || []).forEach(([id, title, cat, type, series, flags, date]) => {
+      if (!DOCS.find(x => x.id === id)) DOCS.push({ id, title, cat, type, series, flags: flags ? flags.split(",") : [], date,
+        isNew: !!date && (Date.now() - new Date(date)) / 864e5 <= NEW_DAYS, link: "https://drive.google.com/drive/folders/" + id });
+    });
+    DOCS.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    EXAMS_ON.length = 0; EXAMS.filter(e => DOCS.some(d => d.cat === e.key)).forEach(e => EXAMS_ON.push(e));
+    route();
+  }).catch(() => {});
 })();
 </script>
 </body>
