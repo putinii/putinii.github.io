@@ -897,5 +897,163 @@ function route() {
 window.addEventListener("hashchange", route);
 route();
 </script>
+<script>
+/* ===== Nâng cấp: ảnh xem trước + bài giới thiệu chi tiết (dữ liệu từ data.json) ===== */
+(function () {
+  const css = `
+  .card .cover.img{padding:0;overflow:hidden;position:relative;font-size:0}
+  .card .cover.img img.th{width:100%;height:100%;object-fit:cover;object-position:top;display:block;background:#fff}
+  .card .cover.img .badges{position:absolute;top:8px;left:8px;z-index:2}
+  .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:6px}
+  .gal button{border:1px solid var(--line);border-radius:12px;padding:0;background:#fff;cursor:zoom-in;overflow:hidden;aspect-ratio:3/4;box-shadow:0 2px 8px rgba(20,30,60,.06);transition:transform .15s}
+  .gal button:hover{transform:translateY(-3px)}
+  .gal img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+  .gal small{display:block;color:var(--muted);font-size:12px;margin-top:8px}
+  .hl{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:12px 0 4px;padding:0;list-style:none}
+  .hl li{background:#f5f8ff;border-radius:10px;padding:10px 12px;font-size:14px;line-height:1.45}
+  .stats{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+  .stats span{background:#eef3ff;color:#1d3c8f;border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600}
+  .tree{list-style:none;margin:0;padding:0;font-size:14px}
+  .tree li{padding:7px 0;border-bottom:1px dashed var(--line);display:flex;gap:8px;align-items:flex-start;word-break:break-word}
+  .tree li:last-child{border:0}
+  .tree .more{color:var(--muted);font-style:italic}
+  .tips{margin:8px 0 0;padding-left:20px}.tips li{margin:4px 0}
+  #lb{position:fixed;inset:0;background:rgba(10,15,30,.86);display:none;align-items:center;justify-content:center;z-index:99;padding:20px;flex-direction:column;gap:12px}
+  #lb.show{display:flex}#lb img{max-width:min(900px,95vw);max-height:80vh;border-radius:10px;background:#fff}
+  #lb a,#lb button{color:#fff;font-size:14px}#lb button{position:absolute;top:14px;right:18px;background:none;border:0;font-size:30px;cursor:pointer}`;
+  const st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
+  const lb = document.createElement("div"); lb.id = "lb";
+  lb.innerHTML = '<button aria-label="Đóng">×</button><img alt="Xem trước"><a target="_blank" rel="noopener">Mở tệp này trên Google Drive ↗</a>';
+  document.body.appendChild(lb);
+  lb.onclick = e => { if (e.target === lb || e.target.tagName === "BUTTON") lb.classList.remove("show"); };
+  document.addEventListener("keydown", e => { if (e.key === "Escape") lb.classList.remove("show"); });
+
+  const TH = (id, w) => "https://drive.google.com/thumbnail?id=" + id + "&sz=w" + w;
+  const CNT = (e, list) => list.reduce((a, k) => a + (e[k] || 0), 0);
+  let PV = {};
+
+  function facts(d) {
+    const p = PV[d.id] || { t: 0, e: {}, n: [], s: [], p: [], sc: 0 };
+    const e = p.e || {};
+    const word = CNT(e, ["doc", "docx"]), pdf = CNT(e, ["pdf"]), ppt = CNT(e, ["ppt", "pptx"]), audio = CNT(e, ["mp3", "wav", "m4a", "wma"]), zip = CNT(e, ["zip", "rar", "7z"]);
+    const all = (p.n || []).concat(p.s || []).join(" ") + " " + d.title;
+    return { p, word, pdf, ppt, audio, zip,
+      key: /key|đáp án|dap an|answer|hướng dẫn chấm|huong dan cham/i.test(all) || d.flags.includes("da"),
+      unit: /unit\s*\d/i.test(all), exam: /giữa k|cuối k|học k|giua ki|cuoi ki|hk ?[12]|semester|midterm|final/i.test(all),
+      moi: d.flags.includes("moi") || /2025|2026|form mới|cấu trúc mới/i.test(all) };
+  }
+  const plus = f => f.p.more ? "+" : "";
+
+  shortOf = function (d) {
+    const f = facts(d), bits = [];
+    if (f.p.t) bits.push(f.p.t + plus(f) + " tệp");
+    if (f.word) bits.push("Word"); if (f.pdf) bits.push("PDF"); if (f.ppt) bits.push("PowerPoint");
+    if (f.audio || d.flags.includes("nghe")) bits.push("có file nghe");
+    if (f.key) bits.push("có đáp án");
+    const t = TYPES[d.type] || TYPES.khac;
+    return (bits.length ? bits.join(" · ") : t.long) + (d.series ? " — " + d.series : "");
+  };
+
+  card = function (d) {
+    const c = catInfo(d.cat) || {}, t = TYPES[d.type] || {}, p = PV[d.id], img = p && p.p && p.p[0];
+    const badges = '<div class="badges"><span class="bd">' + esc(c.short) + '</span>' + (d.isNew ? '<span class="bd new">Mới</span>' : '') + '</div>';
+    const cover = img
+      ? '<div class="cover img" style="background:' + c.color + '">' + badges + '<img class="th" loading="lazy" src="' + TH(img, 400) + '" alt="Xem trước ' + esc(d.title) + '" onerror="this.remove()"></div>'
+      : '<div class="cover" style="background:' + c.color + '">' + badges + (t.icon || "📄") + '</div>';
+    return '<a class="card" href="#tl-' + d.id + '">' + cover + '<div class="body"><h3>' + esc(d.title) + '</h3><p>' + esc(shortOf(d)) + '</p><div class="meta"><span>' + esc(t.name) + '</span>' + (d.series ? '<span>' + esc(d.series) + '</span>' : '') + '</div></div></a>';
+  };
+
+  const HOOK = {
+    "thi-vao-10": "Kỳ thi tuyển sinh vào lớp 10 là cột mốc quan trọng, và luyện đề sát cấu trúc thật là cách ôn hiệu quả nhất.",
+    "thpt-qg": "Kỳ thi tốt nghiệp THPT môn Tiếng Anh đòi hỏi vừa chắc kiến thức vừa quen tốc độ làm bài.",
+    "hsg": "Ôn thi học sinh giỏi cần nguồn tài liệu nâng cao, có hệ thống và có đáp án để tự kiểm tra.",
+    "thi-vao-6": "Thi vào lớp 6 trường chất lượng cao cần làm quen sớm với dạng đề và mức độ khó.",
+    "dgnl": "Phần Tiếng Anh trong bài thi đánh giá năng lực có cách ra đề riêng, cần luyện đúng dạng.",
+    "giao-vien": "Tiết kiệm thời gian soạn bài là điều mọi giáo viên Tiếng Anh đều cần.",
+    "luyen-nghe": "Nghe là kỹ năng nhiều bạn ngại nhất, nhưng chỉ cần luyện đều đặn mỗi ngày là tiến bộ rõ.",
+    "ky-nang": "Ngữ pháp và từ vựng vững là nền tảng cho mọi kỹ năng nghe – nói – đọc – viết.",
+    "ielts": "IELTS cần luyện đều cả bốn kỹ năng với tài liệu đúng định dạng đề thi."
+  };
+  const TYPEDESC = {
+    de: "tuyển tập đề thi, đề kiểm tra được biên soạn theo đúng định dạng, giúp học sinh làm quen cấu trúc đề, rèn tốc độ và phát hiện lỗ hổng kiến thức trước kỳ thi",
+    bt: "hệ thống bài tập luyện tập theo từng nội dung, đi từ cơ bản đến nâng cao, giúp học sinh củng cố kiến thức đã học trên lớp",
+    tv: "tài liệu tổng hợp từ vựng và ngữ pháp trọng tâm, trình bày rõ ràng kèm bài tập vận dụng",
+    nghe: "tài liệu luyện nghe kèm file audio, giúp học sinh quen giọng đọc, ngữ điệu và các dạng câu hỏi nghe thường gặp",
+    ppt: "bộ bài giảng PowerPoint trình chiếu sẵn, bố cục rõ ràng, giáo viên có thể dùng ngay hoặc chỉnh sửa theo lớp mình",
+    ga: "bộ giáo án / kế hoạch bài dạy soạn theo mẫu hiện hành, định dạng dễ chỉnh sửa",
+    hsg: "tài liệu bồi dưỡng học sinh giỏi gồm các chuyên đề nâng cao và đề luyện có độ phân hóa cao",
+    khac: "bộ tài liệu tổng hợp nhiều dạng nội dung hữu ích cho việc dạy và học"
+  };
+  const TIPS = {
+    de: ["In đề ra giấy và bấm giờ như thi thật.", "Làm xong toàn bộ rồi mới đối chiếu đáp án, ghi lại các câu sai.", "Ôn lại phần kiến thức còn yếu trước khi chuyển sang đề tiếp theo."],
+    bt: ["Làm bài tập ngay sau khi học xong bài tương ứng trên lớp.", "Đánh dấu dạng bài hay sai để ôn lại cuối tuần.", "Giáo viên có thể chọn lọc bài tập để giao về nhà."],
+    tv: ["Học mỗi ngày một ít, đọc to từ và ví dụ.", "Tự đặt câu với từ / cấu trúc vừa học.", "Làm phần bài tập vận dụng để nhớ lâu hơn."],
+    nghe: ["Nghe lần đầu không xem lời, sau đó mới đối chiếu.", "Nghe lại những đoạn chưa rõ, tập nói theo (shadowing).", "Luyện 15–20 phút mỗi ngày thay vì dồn một lúc."],
+    ppt: ["Mở bằng PowerPoint để chỉnh sửa nội dung, hình ảnh theo lớp.", "Kết hợp với sách giáo khoa và phiếu bài tập.", "Kiểm tra trước phần âm thanh / video nhúng (nếu có)."],
+    ga: ["Đối chiếu với phân phối chương trình của trường.", "Điều chỉnh hoạt động cho phù hợp trình độ học sinh.", "Kết hợp cùng bài giảng PowerPoint để tiết dạy sinh động."],
+    hsg: ["Học theo từng chuyên đề, làm hết bài tập rồi mới xem key.", "Tổng hợp lỗi sai và cấu trúc hay vào sổ tay riêng.", "Luyện đề tổng hợp có bấm giờ khi gần đến kỳ thi."],
+    khac: ["Xem nhanh danh sách tệp để chọn phần cần dùng.", "Tải về máy để dùng cả khi không có mạng.", "Chia sẻ cho bạn bè, đồng nghiệp nếu thấy hữu ích."]
+  };
+  const ICON = n => /\.(docx?)$/i.test(n) ? "📄" : /\.pdf$/i.test(n) ? "📕" : /\.pptx?$/i.test(n) ? "📊" : /\.(mp3|wav|m4a)$/i.test(n) ? "🎧" : /\.(zip|rar|7z)$/i.test(n) ? "🗜️" : /\.(jpe?g|png)$/i.test(n) ? "🖼️" : /\.mp4$/i.test(n) ? "🎬" : "📄";
+
+  function introHTML(d) {
+    const f = facts(d), c = catInfo(d.cat) || {}, gm = /^lop-(\d+)$/.exec(d.cat);
+    const hook = HOOK[d.cat] || (gm ? "Tiếng Anh lớp " + gm[1] + " theo chương trình GDPT 2018 có nhiều kiến thức mới, học sinh cần được luyện tập thường xuyên để nắm chắc." : "");
+    const what = TYPEDESC[d.type] || TYPEDESC.khac;
+    const hl = [];
+    if (d.series) hl.push("📘 Bám sát sách giáo khoa <b>" + esc(d.series) + "</b>");
+    if (f.moi) hl.push("🆕 Cập nhật theo cấu trúc / chương trình mới");
+    if (f.key) hl.push("✅ Có đáp án hoặc key để tự kiểm tra");
+    if (f.audio || d.flags.includes("nghe")) hl.push("🎧 Kèm " + (f.audio ? f.audio + " " : "") + "file nghe");
+    if (f.word) hl.push("📄 " + f.word + " file Word – chỉnh sửa, in ấn dễ dàng");
+    if (f.pdf) hl.push("📕 " + f.pdf + " file PDF – xem đẹp trên mọi thiết bị");
+    if (f.ppt) hl.push("📊 " + f.ppt + " bài trình chiếu PowerPoint");
+    if (f.unit) hl.push("🗂️ Sắp xếp theo từng Unit, dễ tra cứu");
+    if (f.exam) hl.push("🗓️ Phù hợp ôn kiểm tra giữa kì, cuối kì");
+    if (f.zip) hl.push("🗜️ " + f.zip + " tệp nén – tải một lần là đủ bộ");
+    const stats = [];
+    if (f.p.t) stats.push(f.p.t + plus(f) + " tệp");
+    if (f.p.sc) stats.push(f.p.sc + " thư mục");
+    if (d.date) stats.push("Cập nhật " + d.date.split("-").reverse().join("/"));
+    return "<p>" + esc(hook) + "</p><p><b>" + esc(d.title) + "</b> là " + what + ". Tài liệu thuộc mục <b>" + esc(c.name) + "</b>, phù hợp với " + esc(audience(d)) + ".</p>"
+      + (stats.length ? '<div class="stats">' + stats.map(s => "<span>" + esc(s) + "</span>").join("") + "</div>" : "")
+      + (hl.length ? '<h4 style="margin:16px 0 4px">Điểm nổi bật</h4><ul class="hl">' + hl.map(h => "<li>" + h + "</li>").join("") + "</ul>" : "")
+      + '<h4 style="margin:16px 0 4px">Gợi ý sử dụng hiệu quả</h4><ul class="tips">' + (TIPS[d.type] || TIPS.khac).map(t => "<li>" + t + "</li>").join("") + "</ul>";
+  }
+
+  function treeHTML(d) {
+    const p = PV[d.id]; if (!p) return "";
+    const items = (p.s || []).map(s => "<li><span>📁</span><span>" + esc(s) + "</span></li>").concat((p.n || []).map(n => "<li><span>" + ICON(n) + "</span><span>" + esc(n) + "</span></li>"));
+    if (!items.length) return "";
+    const rest = Math.max(0, (p.t || 0) - (p.n || []).length);
+    return '<div class="panel"><h3>Bên trong bộ tài liệu có gì?</h3><ul class="tree">' + items.join("") + (rest ? '<li class="more"><span>➕</span><span>và ' + rest + (p.more ? "+" : "") + " tệp khác…</span></li>" : "") + "</ul></div>";
+  }
+
+  function galHTML(d) {
+    const p = PV[d.id]; if (!p || !p.p || !p.p.length) return "";
+    return '<div class="panel"><h3>📸 Xem trước nội dung</h3><div class="gal">' + p.p.map((id, i) => '<button data-pv="' + id + '" aria-label="Phóng to trang ' + (i + 1) + '"><img src="' + TH(id, 500) + '" alt="Trang xem trước ' + (i + 1) + " – " + esc(d.title) + '" onerror="this.parentNode.remove()"></button>').join("") + "</div><small>Bấm vào ảnh để phóng to. Đây là một số trang trích từ bộ tài liệu.</small></div>";
+  }
+
+  const _viewDoc = viewDoc;
+  viewDoc = function (d) {
+    _viewDoc(d);
+    const intro = document.querySelector(".panel.intro");
+    if (intro) {
+      intro.innerHTML = "<h3>Giới thiệu bộ tài liệu</h3>" + introHTML(d);
+      intro.insertAdjacentHTML("beforebegin", galHTML(d));
+      const info = intro.nextElementSibling;
+      if (info) info.insertAdjacentHTML("beforebegin", treeHTML(d));
+    }
+    document.querySelectorAll("[data-pv]").forEach(b => b.onclick = () => {
+      lb.querySelector("img").src = TH(b.dataset.pv, 1400);
+      lb.querySelector("a").href = "https://drive.google.com/file/d/" + b.dataset.pv + "/view";
+      lb.classList.add("show");
+    });
+    document.title = d.title + " – " + CONFIG.siteName;
+  };
+
+  fetch("data.json", { cache: "no-cache" }).then(r => r.json()).then(j => { PV = j; route(); }).catch(() => {});
+})();
+</script>
 </body>
 </html>
