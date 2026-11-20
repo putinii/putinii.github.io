@@ -700,6 +700,7 @@ function route() {
   closeDonate();
   document.title = CONFIG.siteName + " – Tài liệu Tiếng Anh miễn phí";
   const h = location.hash.slice(1);
+  if (!h && window.__CAT) { shown = 100000; state.type = "all"; state.series = "all"; return viewCat(window.__CAT); }
   if (!h && window.__DOC) { const d0 = DOCS.find(x => x.id === window.__DOC); if (d0) return viewDoc(d0); return; }
   if (h.startsWith("tl-") && window.__SLUG && window.__SLUG[h.slice(3)]) return location.replace("/tai-lieu/" + window.__SLUG[h.slice(3)]);
   document.querySelectorAll(".nav a").forEach(a => a.classList.toggle("on", a.getAttribute("href") === "/#" + h || (!h && a.getAttribute("href") === "/#")));
@@ -878,4 +879,33 @@ route();
     EXAMS_ON.length = 0; EXAMS.filter(e => DOCS.some(d => d.cat === e.key)).forEach(e => EXAMS_ON.push(e));
     route();
   }).catch(() => {});
+})();
+
+;/* ===== SEO: link tĩnh cho chuyên mục + dữ liệu có cấu trúc ===== */
+(function () {
+  const SITE = "https://tailieu.hoclieuxanh.com";
+  const isCat = k => /^lop-\d+$/.test(k) || EXAMS.some(e => e.key === k);
+  const fix = root => root.querySelectorAll('a[href^="/#"]').forEach(a => { const k = a.getAttribute("href").slice(2); if (isCat(k)) a.setAttribute("href", "/" + k); });
+  new MutationObserver(() => fix(document)).observe(document.body, { childList: true, subtree: true }); fix(document);
+  function ld(o) { let s = document.getElementById("ld"); if (!s) { s = document.createElement("script"); s.type = "application/ld+json"; s.id = "ld"; document.head.appendChild(s); } s.textContent = JSON.stringify(o); }
+  const crumb = items => ({ "@type": "BreadcrumbList", itemListElement: items.map((x, i) => ({ "@type": "ListItem", position: i + 1, name: x[0], item: x[1] })) });
+  const _vd = viewDoc;
+  viewDoc = function (d) {
+    _vd(d);
+    const c = catInfo(d.cat) || {}, url = SITE + "/tai-lieu/" + ((window.__SLUG || {})[d.id] || "");
+    ld({ "@context": "https://schema.org", "@graph": [crumb([["Trang chủ", SITE + "/"], [c.name, SITE + "/" + d.cat], [d.title, url]]),
+      { "@type": "LearningResource", name: d.title, url, description: shortOf(d), inLanguage: "vi", isAccessibleForFree: true, educationalLevel: c.name,
+        learningResourceType: (TYPES[d.type] || {}).name, about: "Tiếng Anh", datePublished: d.date || undefined,
+        provider: { "@type": "Organization", name: CONFIG.siteName, url: SITE + "/" } }] });
+  };
+  const _vc = viewCat;
+  viewCat = function (k) {
+    _vc(k);
+    const c = catInfo(k); if (!c) return;
+    document.title = c.name + " – Đề thi, bài tập, tài liệu miễn phí | " + CONFIG.siteName;
+    ld({ "@context": "https://schema.org", "@graph": [crumb([["Trang chủ", SITE + "/"], [c.name, SITE + "/" + k]]),
+      { "@type": "CollectionPage", name: c.name, url: SITE + "/" + k, description: c.desc, inLanguage: "vi" }] });
+  };
+  const _vh = viewHome;
+  viewHome = function (a) { _vh(a); ld({ "@context": "https://schema.org", "@type": "WebSite", name: CONFIG.siteName, url: SITE + "/", inLanguage: "vi" }); };
 })();
