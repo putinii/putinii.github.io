@@ -1,3 +1,17 @@
+/* Google Analytics 4 */
+(function () {
+  var id = "G-MFHB37ELXG";
+  var s = document.createElement("script"); s.async = true; s.src = "https://www.googletagmanager.com/gtag/js?id=" + id; document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { dataLayer.push(arguments); };
+  gtag("js", new Date());
+  gtag("config", id);
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("#goDl");
+    if (a) gtag("event", "tai_tai_lieu", { link_url: a.href, page_title: document.title, page_location: location.href });
+    if (e.target.closest && e.target.closest("[data-donate], #hdDonate")) gtag("event", "mo_ung_ho", { page_location: location.href });
+  });
+})();
 
 /* ==========================================================================
    ✏️  PHẦN CẦN SỬA: CONFIG (thông tin web + tài khoản) và DOCS (tài liệu)
