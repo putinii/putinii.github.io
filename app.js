@@ -10,6 +10,7 @@
     var a = e.target.closest && e.target.closest("#goDl");
     if (a) gtag("event", "tai_tai_lieu", { link_url: a.href, page_title: document.title, page_location: location.href });
     if (e.target.closest && e.target.closest("[data-donate], #hdDonate")) gtag("event", "mo_ung_ho", { page_location: location.href });
+    if (e.target.closest && e.target.closest("[data-service]")) gtag("event", "dat_dich_vu", { page_location: location.href });
   });
 })();
 
@@ -34,7 +35,11 @@ const CONFIG = {
   goal: { show: true, label: "Chi phí duy trì tháng này", target: 500000, current: 0 },
   uses: ["🌐 Tên miền & hosting", "☁️ Dung lượng lưu trữ", "📚 Cập nhật tài liệu mới"],
 
-  contact: "Zalo: 0388 202 311",              // để người dùng báo link hỏng / xin tài liệu
+  contact: "Zalo: 0388 202 311",
+  // Cách ủng hộ thứ 2: đặt dịch vụ của nhóm quản trị web
+  serviceZalo: "https://zalo.me/0388202311",
+  servicePhone: "0388 202 311",
+  services: ["📝 Sáng kiến kinh nghiệm (SKKN)", "🏆 Bài thi Giáo viên giỏi", "📄 Đề thi & ma trận theo yêu cầu", "🎮 Game dạy học", "📑 Bài dự thi theo quy định"],              // để người dùng báo link hỏng / xin tài liệu
   footer: "Tài liệu chỉ phục vụ mục đích học tập, phi thương mại. Nếu bạn là tác giả và muốn gỡ tài liệu, vui lòng liên hệ."
 };
 
@@ -513,14 +518,29 @@ const grid = list => `<div class="grid">${list.length ? list.map(card).join("") 
 /* ---------- Khối ủng hộ ---------- */
 function donateBanner() {
   const g = CONFIG.goal, pct = Math.min(100, Math.round(g.current / g.target * 100));
-  return `<div class="dbanner">
-    <div>
-      <h2>☕ Web miễn phí nhờ sự ủng hộ của bạn</h2>
-      <p>Mọi tài liệu ở đây đều tải miễn phí. Nếu thấy hữu ích, một ly cà phê nhỏ giúp web tiếp tục hoạt động và có thêm tài liệu mới.</p>
-      <div class="uses">${CONFIG.uses.map(u => `<span>${esc(u)}</span>`).join("")}</div>
-      ${g.show ? `<div class="goal"><div class="bar"><i style="width:${pct}%"></i></div><small><span>${esc(g.label)}</span><span>${fmt(g.current)} / ${fmt(g.target)}</span></small></div>` : ""}
+  return `<div class="dbanner2">
+    <div class="dbh">
+      <h2>💚 Giữ kho tài liệu luôn miễn phí — thầy cô chọn 1 trong 2 cách</h2>
+      <p>Toàn bộ tài liệu trên web đều tải miễn phí, không cần đăng ký. Mỗi tháng web vẫn tốn phí tên miền, lưu trữ và thời gian biên soạn đề mới.</p>
     </div>
-    <button class="btn-big" data-donate>Ủng hộ ngay</button>
+    <div class="dopt">
+      <div class="dcard">
+        <span class="dtag">Cách 1</span>
+        <h3>☕ Ủng hộ chi phí duy trì web</h3>
+        <p>Chỉ <b>20K–30K</b> (bằng một ly cà phê): quét mã QR bằng app ngân hàng bất kỳ, số tiền đã được điền sẵn.</p>
+        <div class="uses">${CONFIG.uses.map(u => `<span>${esc(u)}</span>`).join("")}</div>
+        ${g.show ? `<div class="goal"><div class="bar"><i style="width:${pct}%"></i></div><small><span>${esc(g.label)}</span><span>${fmt(g.current)} / ${fmt(g.target)}</span></small></div>` : ""}
+        <button class="btn-big" data-donate>☕ Ủng hộ ngay</button>
+      </div>
+      <div class="dcard svc">
+        <span class="dtag">Cách 2</span>
+        <h3>🤝 Đặt nhóm quản trị web hỗ trợ công việc</h3>
+        <p>Đội ngũ biên soạn tài liệu trên web nhận hỗ trợ thầy cô:</p>
+        <ul class="svcs">${CONFIG.services.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
+        <p class="small">Thầy cô vừa có sản phẩm đúng yêu cầu, vừa giúp web duy trì miễn phí cho mọi người.</p>
+        <a class="btn-big btn-zalo" data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">💬 Nhắn Zalo ${esc(CONFIG.servicePhone)}</a>
+      </div>
+    </div>
   </div>`;
 }
 
@@ -632,6 +652,7 @@ function viewDoc(d) {
         <h3>Tải về miễn phí</h3>
         <div class="mini"><div class="mq" id="qrMini"></div>
           <div><b>☕ Ủng hộ nếu thấy hữu ích</b><p>Quét mã bằng app ngân hàng bất kỳ. Mỗi đóng góp giúp web duy trì miễn phí.</p></div></div>
+        <p class="svcmini">🤝 Hoặc ủng hộ bằng cách đặt nhóm làm SKKN, bài thi GVG, đề thi, game dạy học: <a data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">Zalo ${esc(CONFIG.servicePhone)}</a></p>
         <button class="dl" data-dl="${esc(d.link)}" data-size="Google Drive">⬇ Tải miễn phí<small>Mở thư mục Google Drive</small></button>
         <p class="note">Không cần đăng ký. Link hỏng? Báo qua <b>${esc(CONFIG.contact)}</b></p>
       </div></div>
@@ -692,12 +713,14 @@ function openDonate(dl) {
     $("#ovTitle").textContent = "☕ Trước khi tải, ủng hộ một ly cà phê nhé?";
     $("#ovSub").textContent = "Tài liệu luôn miễn phí. Mỗi đóng góp nhỏ giúp web duy trì và cập nhật thêm tài liệu mới.";
     $("#ovAction").innerHTML = `<a class="dl" href="${esc(dl.url)}" target="_blank" rel="noopener" id="goDl">⬇ Tiếp tục tải xuống${dl.size ? `<small>${esc(dl.size)}</small>` : ""}</a>
-      <span class="later">Chưa tiện ủng hộ cũng không sao — bạn vẫn tải bình thường 💚</span>`;
+      <span class="later">Chưa tiện ủng hộ cũng không sao — bạn vẫn tải bình thường 💚</span>
+      <p class="svcmini">🤝 Chưa tiện chuyển khoản? Thầy cô cũng có thể ủng hộ bằng cách đặt nhóm làm <b>SKKN, bài thi GVG, đề thi, game dạy học</b>: <a data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">Zalo ${esc(CONFIG.servicePhone)}</a></p>`;
     $("#goDl").addEventListener("click", () => setTimeout(closeDonate, 300));
   } else {
     $("#ovTitle").textContent = "☕ Ủng hộ Kho Tài Liệu";
     $("#ovSub").textContent = "Chọn mức bạn muốn rồi quét mã bằng app ngân hàng bất kỳ — số tiền và nội dung được điền sẵn.";
-    $("#ovAction").innerHTML = `<p class="thanks">Cảm ơn bạn rất nhiều! Mọi đóng góp đều dùng để duy trì web ❤️</p>`;
+    $("#ovAction").innerHTML = `<p class="thanks">Cảm ơn bạn rất nhiều! Mọi đóng góp đều dùng để duy trì web ❤️</p>
+      <p class="svcmini">🤝 Chưa tiện chuyển khoản? Thầy cô cũng có thể ủng hộ bằng cách đặt nhóm làm <b>SKKN, bài thi GVG, đề thi, game dạy học</b>: <a data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">Zalo ${esc(CONFIG.servicePhone)}</a></p>`;
   }
   renderAmounts(); renderBank(); makeQR($("#qrModal"), 196, amount);
   $("#ov").classList.add("show");

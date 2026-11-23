@@ -149,3 +149,25 @@
   footer h4{color:#fff;margin:0 0 8px;font-size:15px}
   footer a{display:block;padding:2px 0}
   footer a:hover{color:#fff}
+
+  /* Khối ủng hộ 2 cách */
+  .dbanner2{background:var(--warm-2);border:1px solid #f6d2c4;border-radius:20px;padding:26px;margin:40px 0 10px}
+  .dbh h2{margin:0 0 6px;color:var(--warm);font-size:22px;line-height:1.35}
+  .dbh p{margin:0 0 18px;color:var(--muted)}
+  .dopt{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media (max-width:760px){.dopt{grid-template-columns:1fr}}
+  .dcard{background:#fff;border:1px solid #f6d2c4;border-radius:16px;padding:20px;display:flex;flex-direction:column;position:relative}
+  .dcard h3{margin:4px 0 6px;font-size:18px}
+  .dcard p{margin:0 0 12px;font-size:14.5px}
+  .dcard .small{font-size:13px;color:var(--muted)}
+  .dcard .btn-big{margin-top:auto;text-align:center;display:block}
+  .dtag{align-self:flex-start;background:var(--warm);color:#fff;font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px}
+  .svc .dtag{background:var(--brand)}
+  .svcs{list-style:none;padding:0;margin:0 0 10px;display:grid;gap:6px;font-size:14.5px}
+  .svcs li{background:var(--brand-2);border-radius:10px;padding:6px 12px}
+  .btn-zalo{background:var(--brand)!important;color:#fff}
+  .svcmini{font-size:13px;color:var(--muted);background:var(--brand-2);border-radius:10px;padding:10px 12px;margin:12px 0 0;line-height:1.5}
+  .svcmini a{color:var(--brand);font-weight:700;white-space:nowrap}
+  .dcard .uses span{background:var(--warm-2)}
+  .dcard .goal .bar{background:#f6e0d6}
+  .dcard .goal{margin-bottom:14px}
