@@ -26,8 +26,8 @@ const CONFIG = {
   // Techcombank 970407 · ACB 970416 · VPBank 970432 · TPBank 970423 · Sacombank 970403
   bank: { bin: "970436", name: "Vietcombank", account: "0491000085112", owner: "NGUYEN VAN CUONG" },
   transferNote: "Ung ho Kho Tieng Anh",       // nội dung chuyển khoản (không dấu)
-  amounts: [10000, 20000, 50000, 100000],      // mức gợi ý
-  defaultAmount: 20000,
+  amounts: [20000, 30000, 50000, 100000],      // mức gợi ý
+  defaultAmount: 30000,
   qrImage: "",   // nếu muốn dùng ảnh QR MoMo/ZaloPay riêng: dán data:image/png;base64,... (khi đó tắt chọn mức tiền)
 
   // Thanh mục tiêu (đặt show:false để ẩn). Cập nhật số tay mỗi tháng.
