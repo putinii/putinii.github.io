@@ -250,3 +250,87 @@
   .top .wrap{gap:10px}
   .nav a{padding:8px 7px;font-size:14.5px}
   @media (max-width:1240px){.btn-svc{display:none}}
+
+  /* Khung ủng hộ: rộng như ban đầu, thấp bằng ~1/2 */
+  .dbanner2{max-width:none;margin:28px 0 10px;padding:20px 24px}
+  .dbh{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+  .dbh h2{font-size:24px;margin:0}
+  .dsub{background:#ffd84d;color:#7a2a00;font-weight:800;padding:4px 14px;border-radius:999px;font-size:15px}
+  .dopt{grid-template-columns:1fr 1.35fr;gap:14px}
+  .dcard{padding:14px 18px;display:grid;grid-template-columns:1fr auto;column-gap:16px;row-gap:6px;align-items:center}
+  .dcard .dtop{grid-column:1/-1;display:flex;align-items:center;gap:10px}
+  .dcard h3{margin:0;font-size:19px}
+  .dcard p{margin:0;font-size:14.5px}
+  .dcard .goal{grid-column:1;margin:0;max-width:none}
+  .dcard .btn-big{grid-column:2;grid-row:2/4;margin:0;white-space:nowrap;align-self:center}
+  .dcard.svc .svcs{grid-column:1;display:flex;flex-wrap:wrap;gap:6px;margin:0}
+  .dcard.svc .svcs li{font-size:13.5px;padding:4px 10px;border-radius:999px}
+  .dcard.svc .btn-big{grid-row:2}
+  @media (max-width:900px){.dopt{grid-template-columns:1fr}}
+  @media (max-width:560px){
+    .dbanner2{padding:16px;border-radius:16px}
+    .dbh h2{font-size:20px}.dsub{font-size:13.5px}
+    .dcard{grid-template-columns:1fr;padding:14px}
+    .dcard .btn-big,.dcard.svc .btn-big{grid-column:1;grid-row:auto;width:100%;font-size:16px;padding:12px}
+  }
+  .mtip{font-size:13px;color:var(--ink);background:#eef6ff;border-radius:10px;padding:8px 10px;margin:8px 0 0;text-align:left;line-height:1.5}
+  #qrTip{display:none;margin:0 0 10px}
+
+  /* ===== Điện thoại ===== */
+  @media (max-width:760px){
+    .top .wrap{flex-wrap:wrap;height:auto;padding-top:8px;padding-bottom:0;row-gap:4px}
+    .nav{display:flex;order:3;flex:0 0 100%;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:8px;gap:6px}
+    .nav::-webkit-scrollbar{display:none}
+    .nav a{flex:0 0 auto;background:var(--bg);font-size:14px;padding:6px 12px}
+    .hero{padding:30px 0 36px}
+    .hero p{font-size:15px}
+    .trust{gap:16px}
+    .sticky{position:static}
+    .cols{display:flex;flex-direction:column}
+    .cols .side{order:-1}
+    .grid{grid-template-columns:1fr 1fr;gap:10px}
+    .card .body{padding:10px 12px 12px}
+    .card h3{font-size:14px}
+    .card p{font-size:12.5px}
+    .cover{height:90px}
+    .meta{display:none}
+    .phead{padding:18px;gap:12px}
+    .phead .ic{width:56px;height:56px;font-size:30px;border-radius:14px}
+    .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
+    .chips::-webkit-scrollbar{display:none}
+    .chip{flex:0 0 auto}
+    .panel{padding:16px}
+    .zfloat{right:12px;bottom:12px}
+    #qrTip{display:block}
+    .modal{padding:20px 16px 16px;border-radius:18px}
+    .modal #ovTitle{font-size:20px}
+    .qrbox img,.qrbox canvas{width:160px;height:160px}
+  }
+  @media (max-width:380px){.grid{grid-template-columns:1fr}}
+  @media (max-width:760px){
+    .modal{display:flex;flex-direction:column}
+    .modal #ovTitle{order:1}.modal .sub{order:2}#ovAction{order:3;margin-bottom:12px}
+    .amts{order:4}.qrbox{order:5}#qrTip{order:6}.bank{order:7}
+  }
+  .dtag{white-space:nowrap}
+  .dcard{grid-template-columns:1fr auto;align-items:center}
+  .dcard .dtop{grid-column:1;grid-row:1}
+  .dcard .btn-big,.dcard.svc .btn-big{grid-column:2;grid-row:1;padding:10px 18px;font-size:16px}
+  .dcard p,.dcard .goal,.dcard.svc .svcs{grid-column:1/-1}
+  @media (max-width:560px){
+    .dcard{grid-template-columns:1fr}
+    .dcard .btn-big,.dcard.svc .btn-big{grid-column:1;grid-row:auto;order:9}
+    .dcard>*{order:1}
+  }
+  .dcard h3{font-size:17.5px}
+  @media (max-width:760px){
+    .side .panel{display:flex;flex-direction:column}
+    .side .panel h3{order:1}.side .panel .dl{order:2}.side .panel .note{order:3;margin-bottom:12px}
+    .side .panel .mini{order:4}.side .panel .svcmini{order:5}
+    .modal #ovTitle{padding-right:26px}
+    .svcstrip{padding:12px;gap:10px;margin-bottom:14px}
+    .ss-t{font-size:15px;gap:5px}.ss-t span{font-size:13px;padding:1px 8px}
+    .ss-b{width:100%;flex-wrap:nowrap}.ss-z,.ss-d{flex:1;text-align:center;font-size:14.5px;padding:9px 8px}
+    .badges .bd:first-child{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .bd{font-size:10.5px}
+  }

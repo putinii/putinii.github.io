@@ -524,30 +524,24 @@ function donateBanner() {
   const g = CONFIG.goal, pct = Math.min(100, Math.round(g.current / g.target * 100));
   return `<div class="dbanner2">
     <div class="dbh">
-      <h2>💚 Giữ kho tài liệu luôn miễn phí<br><span>Các bạn có thể chọn ủng hộ theo 1 trong 2 cách 👇</span></h2>
-      <p>Tài liệu trên web luôn tải miễn phí. Nếu thấy hữu ích, các bạn có thể đồng hành cùng web theo cách mình thấy thuận tiện nhất.</p>
+      <h2>💚 Giữ kho tài liệu luôn miễn phí</h2>
+      <span class="dsub">Các bạn có thể chọn ủng hộ theo 1 trong 2 cách 👇</span>
     </div>
     <div class="dopt">
       <div class="dcard">
-        <span class="dtag">Cách 1</span>
-        <h3>☕ Ủng hộ duy trì web</h3>
-        <p>Một ly cà phê <b>20K–30K</b> — quét mã QR bằng app ngân hàng bất kỳ.</p>
-        <div class="uses">${CONFIG.uses.map(u => `<span>${esc(u)}</span>`).join("")}</div>
+        <div class="dtop"><span class="dtag">Cách 1</span><h3>☕ Ủng hộ duy trì web</h3></div>
+        <p>Một ly cà phê <b>20K–30K</b> — quét mã QR hoặc chuyển khoản bằng app ngân hàng bất kỳ.</p>
         ${g.show ? `<div class="goal"><div class="bar"><i style="width:${pct}%"></i></div><small><span>${esc(g.label)}</span><span>${fmt(g.current)} / ${fmt(g.target)}</span></small></div>` : ""}
         <button class="btn-big" data-donate>☕ Ủng hộ ngay</button>
       </div>
       <div class="dcard svc">
-        <span class="dtag">Cách 2</span>
-        <h3>🤝 Nhờ nhóm hỗ trợ giáo viên</h3>
-        <p>Nhóm biên soạn tài liệu của web sẵn lòng hỗ trợ:</p>
+        <div class="dtop"><span class="dtag">Cách 2</span><h3>🤝 Nhờ nhóm hỗ trợ giáo viên</h3></div>
         <ul class="svcs">${CONFIG.services.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
-        <p class="small">Vừa có sản phẩm ưng ý, vừa giúp web duy trì miễn phí cho mọi người.</p>
         <a class="btn-big btn-zalo" data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">💬 Nhắn Zalo ${esc(CONFIG.servicePhone)}</a>
       </div>
     </div>
   </div>`;
 }
-
 function svcStrip() {
   return `<div class="svcstrip">
     <div class="ss-t"><b>🤝 Hỗ trợ giáo viên:</b> <span>SKKN</span><span>Bài thi GVG</span><span>Đề thi</span><span>Game dạy học</span><span>Bài dự thi</span></div>
@@ -678,7 +672,7 @@ function viewDoc(d) {
         <div class="mini"><div class="mq" id="qrMini"></div>
           <div><b>☕ Ủng hộ nếu thấy hữu ích</b><p>Quét mã bằng app ngân hàng bất kỳ. Mỗi đóng góp giúp web duy trì miễn phí.</p></div></div>
         <p class="svcmini">🤝 Các bạn cũng có thể ủng hộ bằng cách nhờ nhóm hỗ trợ SKKN, bài thi GVG, đề thi, game dạy học: <a data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">Zalo ${esc(CONFIG.servicePhone)}</a></p>
-        <button class="dl" data-dl="${esc(d.link)}" data-size="Google Drive">⬇ Tải miễn phí<small>${d.flags.includes("file") ? "Mở tệp trên Google Drive" : "Mở thư mục Google Drive"}</small></button>
+        <button class="dl" data-dl="${esc(d.flags.includes("file") ? "https://drive.google.com/uc?export=download&id=" + d.id : d.link)}" data-size="${d.flags.includes("file") ? "Tải tệp về máy / điện thoại" : "Google Drive"}">⬇ Tải miễn phí<small>${d.flags.includes("file") ? "Mở tệp trên Google Drive" : "Mở thư mục Google Drive"}</small></button>
         <p class="note">Không cần đăng ký. Link hỏng? Báo qua <b>${esc(CONFIG.contact)}</b></p>
       </div></div>
     </div>
@@ -739,6 +733,7 @@ function openDonate(dl) {
     $("#ovSub").textContent = "Tài liệu luôn miễn phí. Mỗi đóng góp nhỏ giúp web duy trì và cập nhật thêm tài liệu mới.";
     $("#ovAction").innerHTML = `<a class="dl" href="${esc(dl.url)}" target="_blank" rel="noopener" id="goDl">⬇ Tiếp tục tải xuống${dl.size ? `<small>${esc(dl.size)}</small>` : ""}</a>
       <span class="later">Chưa tiện ủng hộ cũng không sao — bạn vẫn tải bình thường 💚</span>
+      ${/uc\?export=download/.test(dl.url) ? "" : `<p class="mtip">📱 Trên điện thoại: mở thư mục, bấm <b>⋮</b> cạnh tệp cần lấy → <b>Tải xuống</b> (hoặc mở bằng app Google Drive).</p>`}
       <p class="svcmini">🤝 Các bạn cũng có thể ủng hộ bằng cách nhờ nhóm hỗ trợ <b>SKKN, bài thi GVG, đề thi, game dạy học</b>: <a data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">Zalo ${esc(CONFIG.servicePhone)}</a></p>`;
     $("#goDl").addEventListener("click", () => setTimeout(closeDonate, 300));
   } else {
@@ -748,6 +743,7 @@ function openDonate(dl) {
       <p class="svcmini">🤝 Các bạn cũng có thể ủng hộ bằng cách nhờ nhóm hỗ trợ <b>SKKN, bài thi GVG, đề thi, game dạy học</b>: <a data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">Zalo ${esc(CONFIG.servicePhone)}</a></p>`;
   }
   renderAmounts(); renderBank(); makeQR($("#qrModal"), 196, amount);
+  if (!$("#qrTip")) $("#qrModal").insertAdjacentHTML("afterend", '<p class="mtip" id="qrTip">📱 Đang dùng điện thoại? Chụp màn hình mã QR rồi mở app ngân hàng → <b>Quét mã từ ảnh</b>, hoặc bấm <b>Chép</b> số tài khoản bên dưới.</p>');
   $("#ov").classList.add("show");
 }
 function closeDonate() { $("#ov").classList.remove("show"); }
