@@ -56,6 +56,7 @@ const EXAMS = [
   { key: "cambridge-yle", name: "Starters · Movers · Flyers", icon: "🧸", color: "#ffe6ef", desc: "Cambridge cho học sinh tiểu học" },
   { key: "luyen-nghe", name: "Luyện nghe", icon: "🎧", color: "#e0f4fb", desc: "File nghe, bài nghe chép chính tả, luyện nghe theo chủ đề" },
   { key: "ky-nang", name: "Ngữ pháp & kỹ năng", icon: "🔤", color: "#eef2f6", desc: "Ngữ pháp, từ vựng, đọc – viết dùng cho nhiều lớp" },
+  { key: "game-day-hoc", name: "Game dạy học PowerPoint", icon: "🎮", color: "#ffe6f4", desc: "Game khởi động, ôn tập, kiểm tra bài cũ — tải về, thay câu hỏi là dùng ngay" },
   { key: "giao-vien", name: "Dành cho giáo viên", icon: "👩‍🏫", color: "#e8f0e0", desc: "Giáo án, bài giảng PowerPoint, tài liệu chuyên môn" }
 ];
 
@@ -68,6 +69,7 @@ const TYPES = {
   ppt:  { name: "Bài giảng PowerPoint", icon: "📊", long: "Bài giảng PowerPoint" },
   ga:   { name: "Giáo án",           icon: "👩‍🏫", long: "Giáo án / kế hoạch bài dạy" },
   hsg:  { name: "Bồi dưỡng HSG",     icon: "🥇", long: "Tài liệu bồi dưỡng học sinh giỏi" },
+  game: { name: "Game PowerPoint",   icon: "🎮", long: "Game dạy học PowerPoint" },
   khac: { name: "Tài liệu tổng hợp", icon: "📚", long: "Tài liệu tổng hợp" }
 };
 const FLAGS = { nghe: "🎧 Có file nghe", da: "✅ Có đáp án", word: "📄 File Word chỉnh sửa được", ppt: "📊 Có PowerPoint", pdf: "📕 File PDF", moi: "🆕 Theo cấu trúc / chương trình mới" };
@@ -437,11 +439,13 @@ const RAW = [["1_C_ku9TL3xlQocruyys02WKCtQo8DLmf","Trắc nghiệm tiếng anh 8
 /* ============================ HẾT PHẦN CẦN SỬA ============================ */
 
 const NEW_DAYS = 45;
+// Mục là 1 tệp (cờ "file") thì mở tệp, còn lại mở thư mục
+function driveLink(id, f) { return (f || []).includes("file") ? "https://drive.google.com/file/d/" + id + "/view" : "https://drive.google.com/drive/folders/" + id; }
 const DOCS = RAW.map(([id, title, cat, type, series, flags, date]) => {
   const f = flags ? flags.split(",") : [];
   return { id, title, cat, type, series, flags: f, date,
     isNew: !!date && (Date.now() - new Date(date)) / 864e5 <= NEW_DAYS,
-    link: "https://drive.google.com/drive/folders/" + id };
+    link: driveLink(id, f) };
 });
 
 const $ = s => document.querySelector(s);
@@ -470,7 +474,7 @@ const count = key => DOCS.filter(d => d.cat === key).length;
 const EXAMS_ON = EXAMS.filter(e => count(e.key) > 0);
 const SCHOOL = ["Tiểu học", "THCS", "THPT"];
 function audience(d) {
-  if (d.type === "ga" || d.type === "ppt" || d.cat === "giao-vien") return "giáo viên Tiếng Anh cần tài liệu soạn giảng";
+  if (d.type === "ga" || d.type === "ppt" || d.type === "game" || d.cat === "giao-vien" || d.cat === "game-day-hoc") return "giáo viên Tiếng Anh cần tài liệu soạn giảng";
   const m = /^lop-(\d+)$/.exec(d.cat);
   if (m) { const g = +m[1]; return g <= 5 ? "học sinh tiểu học, phụ huynh kèm con học ở nhà và giáo viên" : `học sinh lớp ${g} tự ôn luyện, giáo viên và phụ huynh`; }
   return { "thi-vao-10": "học sinh lớp 9 ôn thi tuyển sinh vào lớp 10", "thpt-qg": "học sinh lớp 12 ôn thi tốt nghiệp THPT", "hsg": "học sinh khá giỏi, đội tuyển HSG và giáo viên bồi dưỡng",
@@ -492,7 +496,7 @@ function introOf(d) {
 
 /* ---------- Header / footer ---------- */
 $("#logoName").textContent = CONFIG.siteName;
-$("#nav").innerHTML = `<a href="/#">Trang chủ</a><a href="/#cac-lop">Lớp 1–12</a><a href="/#chung-chi">Chứng chỉ</a><a href="/#thi-vao-10">Thi vào 10</a><a href="/#thpt-qg">Thi THPT</a><a href="/#giao-vien">Giáo viên</a>`;
+$("#nav").innerHTML = `<a href="/#">Trang chủ</a><a href="/#cac-lop">Lớp 1–12</a><a href="/#chung-chi">Chứng chỉ</a><a href="/#thi-vao-10">Thi vào 10</a><a href="/#thpt-qg">Thi THPT</a><a href="/#game-day-hoc">Game</a><a href="/#giao-vien">Giáo viên</a>`;
 $("#hdDonate").onclick = () => openDonate();
 $("#foot").innerHTML = `
   <div><h4>${esc(CONFIG.siteName)}</h4><p style="margin:0 0 8px">${esc(CONFIG.footer)}</p><p style="margin:0">Báo link hỏng / xin tài liệu: <b style="color:#fff">${esc(CONFIG.contact)}</b></p></div>
@@ -520,24 +524,24 @@ function donateBanner() {
   const g = CONFIG.goal, pct = Math.min(100, Math.round(g.current / g.target * 100));
   return `<div class="dbanner2">
     <div class="dbh">
-      <h2>💚 Giữ kho tài liệu luôn miễn phí<br><span>Thầy cô chọn 1 trong 2 cách ủng hộ 👇</span></h2>
-      <p>Toàn bộ tài liệu trên web đều tải miễn phí, không cần đăng ký. Mỗi tháng web vẫn tốn phí tên miền, lưu trữ và thời gian biên soạn đề mới.</p>
+      <h2>💚 Giữ kho tài liệu luôn miễn phí<br><span>Các bạn có thể chọn ủng hộ theo 1 trong 2 cách 👇</span></h2>
+      <p>Tài liệu trên web luôn tải miễn phí. Nếu thấy hữu ích, các bạn có thể đồng hành cùng web theo cách mình thấy thuận tiện nhất.</p>
     </div>
     <div class="dopt">
       <div class="dcard">
         <span class="dtag">Cách 1</span>
-        <h3>☕ Ủng hộ chi phí duy trì web</h3>
-        <p>Chỉ <b>20K–30K</b> (bằng một ly cà phê): quét mã QR bằng app ngân hàng bất kỳ, số tiền đã được điền sẵn.</p>
+        <h3>☕ Ủng hộ duy trì web</h3>
+        <p>Một ly cà phê <b>20K–30K</b> — quét mã QR bằng app ngân hàng bất kỳ.</p>
         <div class="uses">${CONFIG.uses.map(u => `<span>${esc(u)}</span>`).join("")}</div>
         ${g.show ? `<div class="goal"><div class="bar"><i style="width:${pct}%"></i></div><small><span>${esc(g.label)}</span><span>${fmt(g.current)} / ${fmt(g.target)}</span></small></div>` : ""}
         <button class="btn-big" data-donate>☕ Ủng hộ ngay</button>
       </div>
       <div class="dcard svc">
         <span class="dtag">Cách 2</span>
-        <h3>🤝 Đặt nhóm quản trị web hỗ trợ công việc</h3>
-        <p>Đội ngũ biên soạn tài liệu trên web nhận hỗ trợ thầy cô:</p>
+        <h3>🤝 Nhờ nhóm hỗ trợ giáo viên</h3>
+        <p>Nhóm biên soạn tài liệu của web sẵn lòng hỗ trợ:</p>
         <ul class="svcs">${CONFIG.services.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
-        <p class="small">Thầy cô vừa có sản phẩm đúng yêu cầu, vừa giúp web duy trì miễn phí cho mọi người.</p>
+        <p class="small">Vừa có sản phẩm ưng ý, vừa giúp web duy trì miễn phí cho mọi người.</p>
         <a class="btn-big btn-zalo" data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">💬 Nhắn Zalo ${esc(CONFIG.servicePhone)}</a>
       </div>
     </div>
@@ -546,7 +550,7 @@ function donateBanner() {
 
 function svcStrip() {
   return `<div class="svcstrip">
-    <div class="ss-t"><b>🤝 Nhóm quản trị web nhận hỗ trợ:</b> <span>SKKN</span><span>Bài thi GVG</span><span>Đề thi</span><span>Game dạy học</span><span>Bài dự thi</span></div>
+    <div class="ss-t"><b>🤝 Hỗ trợ giáo viên:</b> <span>SKKN</span><span>Bài thi GVG</span><span>Đề thi</span><span>Game dạy học</span><span>Bài dự thi</span></div>
     <div class="ss-b"><a class="ss-z" data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">💬 Zalo ${esc(CONFIG.servicePhone)}</a><button class="ss-d" data-donate>☕ Ủng hộ web</button></div>
   </div>`;
 }
@@ -554,13 +558,13 @@ function svcStrip() {
 (function () {
   const f = document.createElement("a");
   f.className = "zfloat"; f.href = CONFIG.serviceZalo; f.target = "_blank"; f.rel = "noopener"; f.setAttribute("data-service", "");
-  f.innerHTML = `<i>💬</i><span>Đặt SKKN · GVG · Đề thi<br><b>Zalo ${esc(CONFIG.servicePhone)}</b></span>`;
+  f.innerHTML = `<i>💬</i><span>Hỗ trợ giáo viên<br><b>Zalo ${esc(CONFIG.servicePhone)}</b></span>`;
   document.body.appendChild(f);
   const hd = document.getElementById("hdDonate");
   if (hd) {
     const b = document.createElement("a");
     b.className = "btn-svc"; b.href = CONFIG.serviceZalo; b.target = "_blank"; b.rel = "noopener"; b.setAttribute("data-service", "");
-    b.textContent = "🤝 Dịch vụ GV";
+    b.textContent = "🤝 Hỗ trợ giáo viên";
     hd.parentNode.insertBefore(b, hd);
   }
 })();
@@ -573,7 +577,7 @@ function viewHome(anchor) {
     <p>${esc(CONFIG.heroDesc)}</p>
     <form class="searchbar" id="sf"><input id="sq" placeholder="Tìm: lớp 6 Global Success, IELTS, đề thi vào 10…" aria-label="Tìm tài liệu"><button>Tìm</button></form>
     <div class="quick">
-      ${["lop-6","lop-9","thi-vao-10","thpt-qg","lop-12","giao-vien"].filter(k => count(k)).map(k => `<a href="/#${k}">${esc(catInfo(k).short)}</a>`).join("")}
+      ${["lop-6","lop-9","thi-vao-10","thpt-qg","lop-12","game-day-hoc","giao-vien"].filter(k => count(k)).map(k => `<a href="/#${k}">${esc(catInfo(k).short)}</a>`).join("")}
     </div>
     <div class="trust"><div><b>${DOCS.length}</b>bộ tài liệu</div><div><b>12</b>lớp</div><div><b>${EXAMS_ON.length}</b>chuyên mục thi & kỹ năng</div><div><b>0đ</b>không cần đăng ký</div></div>
   </div></div>
@@ -673,8 +677,8 @@ function viewDoc(d) {
         <h3>Tải về miễn phí</h3>
         <div class="mini"><div class="mq" id="qrMini"></div>
           <div><b>☕ Ủng hộ nếu thấy hữu ích</b><p>Quét mã bằng app ngân hàng bất kỳ. Mỗi đóng góp giúp web duy trì miễn phí.</p></div></div>
-        <p class="svcmini">🤝 Hoặc ủng hộ bằng cách đặt nhóm làm SKKN, bài thi GVG, đề thi, game dạy học: <a data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">Zalo ${esc(CONFIG.servicePhone)}</a></p>
-        <button class="dl" data-dl="${esc(d.link)}" data-size="Google Drive">⬇ Tải miễn phí<small>Mở thư mục Google Drive</small></button>
+        <p class="svcmini">🤝 Các bạn cũng có thể ủng hộ bằng cách nhờ nhóm hỗ trợ SKKN, bài thi GVG, đề thi, game dạy học: <a data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">Zalo ${esc(CONFIG.servicePhone)}</a></p>
+        <button class="dl" data-dl="${esc(d.link)}" data-size="Google Drive">⬇ Tải miễn phí<small>${d.flags.includes("file") ? "Mở tệp trên Google Drive" : "Mở thư mục Google Drive"}</small></button>
         <p class="note">Không cần đăng ký. Link hỏng? Báo qua <b>${esc(CONFIG.contact)}</b></p>
       </div></div>
     </div>
@@ -735,13 +739,13 @@ function openDonate(dl) {
     $("#ovSub").textContent = "Tài liệu luôn miễn phí. Mỗi đóng góp nhỏ giúp web duy trì và cập nhật thêm tài liệu mới.";
     $("#ovAction").innerHTML = `<a class="dl" href="${esc(dl.url)}" target="_blank" rel="noopener" id="goDl">⬇ Tiếp tục tải xuống${dl.size ? `<small>${esc(dl.size)}</small>` : ""}</a>
       <span class="later">Chưa tiện ủng hộ cũng không sao — bạn vẫn tải bình thường 💚</span>
-      <p class="svcmini">🤝 Chưa tiện chuyển khoản? Thầy cô cũng có thể ủng hộ bằng cách đặt nhóm làm <b>SKKN, bài thi GVG, đề thi, game dạy học</b>: <a data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">Zalo ${esc(CONFIG.servicePhone)}</a></p>`;
+      <p class="svcmini">🤝 Các bạn cũng có thể ủng hộ bằng cách nhờ nhóm hỗ trợ <b>SKKN, bài thi GVG, đề thi, game dạy học</b>: <a data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">Zalo ${esc(CONFIG.servicePhone)}</a></p>`;
     $("#goDl").addEventListener("click", () => setTimeout(closeDonate, 300));
   } else {
     $("#ovTitle").textContent = "☕ Ủng hộ Kho Tài Liệu";
     $("#ovSub").textContent = "Chọn mức bạn muốn rồi quét mã bằng app ngân hàng bất kỳ — số tiền và nội dung được điền sẵn.";
     $("#ovAction").innerHTML = `<p class="thanks">Cảm ơn bạn rất nhiều! Mọi đóng góp đều dùng để duy trì web ❤️</p>
-      <p class="svcmini">🤝 Chưa tiện chuyển khoản? Thầy cô cũng có thể ủng hộ bằng cách đặt nhóm làm <b>SKKN, bài thi GVG, đề thi, game dạy học</b>: <a data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">Zalo ${esc(CONFIG.servicePhone)}</a></p>`;
+      <p class="svcmini">🤝 Các bạn cũng có thể ủng hộ bằng cách nhờ nhóm hỗ trợ <b>SKKN, bài thi GVG, đề thi, game dạy học</b>: <a data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">Zalo ${esc(CONFIG.servicePhone)}</a></p>`;
   }
   renderAmounts(); renderBank(); makeQR($("#qrModal"), 196, amount);
   $("#ov").classList.add("show");
@@ -844,6 +848,7 @@ route();
     "thi-vao-6": "Thi vào lớp 6 trường chất lượng cao cần làm quen sớm với dạng đề và mức độ khó.",
     "dgnl": "Phần Tiếng Anh trong bài thi đánh giá năng lực có cách ra đề riêng, cần luyện đúng dạng.",
     "giao-vien": "Tiết kiệm thời gian soạn bài là điều mọi giáo viên Tiếng Anh đều cần.",
+    "game-day-hoc": "Một trò chơi 5 phút đầu giờ có thể làm cả lớp hào hứng suốt tiết học.",
     "luyen-nghe": "Nghe là kỹ năng nhiều bạn ngại nhất, nhưng chỉ cần luyện đều đặn mỗi ngày là tiến bộ rõ.",
     "ky-nang": "Ngữ pháp và từ vựng vững là nền tảng cho mọi kỹ năng nghe – nói – đọc – viết.",
     "ielts": "IELTS cần luyện đều cả bốn kỹ năng với tài liệu đúng định dạng đề thi."
@@ -856,7 +861,8 @@ route();
     ppt: "bộ bài giảng PowerPoint trình chiếu sẵn, bố cục rõ ràng, giáo viên có thể dùng ngay hoặc chỉnh sửa theo lớp mình",
     ga: "bộ giáo án / kế hoạch bài dạy soạn theo mẫu hiện hành, định dạng dễ chỉnh sửa",
     hsg: "tài liệu bồi dưỡng học sinh giỏi gồm các chuyên đề nâng cao và đề luyện có độ phân hóa cao",
-    khac: "bộ tài liệu tổng hợp nhiều dạng nội dung hữu ích cho việc dạy và học"
+    khac: "bộ tài liệu tổng hợp nhiều dạng nội dung hữu ích cho việc dạy và học",
+    game: "game PowerPoint dùng cho khởi động, ôn tập hoặc kiểm tra bài cũ; giáo viên chỉ cần thay câu hỏi theo bài học là dùng được ngay"
   };
   const TIPS = {
     de: ["In đề ra giấy và bấm giờ như thi thật.", "Làm xong toàn bộ rồi mới đối chiếu đáp án, ghi lại các câu sai.", "Ôn lại phần kiến thức còn yếu trước khi chuyển sang đề tiếp theo."],
@@ -866,6 +872,7 @@ route();
     ppt: ["Mở bằng PowerPoint để chỉnh sửa nội dung, hình ảnh theo lớp.", "Kết hợp với sách giáo khoa và phiếu bài tập.", "Kiểm tra trước phần âm thanh / video nhúng (nếu có)."],
     ga: ["Đối chiếu với phân phối chương trình của trường.", "Điều chỉnh hoạt động cho phù hợp trình độ học sinh.", "Kết hợp cùng bài giảng PowerPoint để tiết dạy sinh động."],
     hsg: ["Học theo từng chuyên đề, làm hết bài tập rồi mới xem key.", "Tổng hợp lỗi sai và cấu trúc hay vào sổ tay riêng.", "Luyện đề tổng hợp có bấm giờ khi gần đến kỳ thi."],
+    game: ["Tải về và mở bằng PowerPoint trên máy tính (không trình chiếu trực tiếp trên Google Drive).", "Thay câu hỏi, từ vựng theo bài học trước khi lên lớp.", "Chia lớp thành đội và bấm giờ để tăng tinh thần thi đua."],
     khac: ["Xem nhanh danh sách tệp để chọn phần cần dùng.", "Tải về máy để dùng cả khi không có mạng.", "Chia sẻ cho bạn bè, đồng nghiệp nếu thấy hữu ích."]
   };
   const ICON = n => /\.(docx?)$/i.test(n) ? "📄" : /\.pdf$/i.test(n) ? "📕" : /\.pptx?$/i.test(n) ? "📊" : /\.(mp3|wav|m4a)$/i.test(n) ? "🎧" : /\.(zip|rar|7z)$/i.test(n) ? "🗜️" : /\.(jpe?g|png)$/i.test(n) ? "🖼️" : /\.mp4$/i.test(n) ? "🎬" : "📄";
@@ -889,6 +896,10 @@ route();
     if (f.p.t) stats.push(f.p.t + plus(f) + " tệp");
     if (f.p.sc) stats.push(f.p.sc + " thư mục");
     if (d.date) stats.push("Cập nhật " + d.date.split("-").reverse().join("/"));
+    if (f.p.d) return f.p.d.map(x => "<p>" + esc(x) + "</p>").join("")
+      + (stats.length ? '<div class="stats">' + stats.map(s => "<span>" + esc(s) + "</span>").join("") + "</div>" : "")
+      + (f.p.h ? '<h4 style="margin:16px 0 4px">Điểm nổi bật</h4><ul class="hl">' + f.p.h.map(h => "<li>" + esc(h) + "</li>").join("") + "</ul>" : "")
+      + '<h4 style="margin:16px 0 4px">Gợi ý sử dụng hiệu quả</h4><ul class="tips">' + (TIPS[d.type] || TIPS.khac).map(t => "<li>" + t + "</li>").join("") + "</ul>";
     return "<p>" + esc(hook) + "</p><p><b>" + esc(d.title) + "</b> là " + what + ". Tài liệu thuộc mục <b>" + esc(c.name) + "</b>, phù hợp với " + esc(audience(d)) + ".</p>"
       + (stats.length ? '<div class="stats">' + stats.map(s => "<span>" + esc(s) + "</span>").join("") + "</div>" : "")
       + (hl.length ? '<h4 style="margin:16px 0 4px">Điểm nổi bật</h4><ul class="hl">' + hl.map(h => "<li>" + h + "</li>").join("") + "</ul>" : "")
@@ -931,7 +942,7 @@ route();
     (j.__cats || []).forEach(c => { if (!EXAMS.find(e => e.key === c.key)) EXAMS.push(c); });
     (j.__new || []).forEach(([id, title, cat, type, series, flags, date]) => {
       if (!DOCS.find(x => x.id === id)) DOCS.push({ id, title, cat, type, series, flags: flags ? flags.split(",") : [], date,
-        isNew: !!date && (Date.now() - new Date(date)) / 864e5 <= NEW_DAYS, link: "https://drive.google.com/drive/folders/" + id });
+        isNew: !!date && (Date.now() - new Date(date)) / 864e5 <= NEW_DAYS, link: driveLink(id, flags ? flags.split(",") : []) });
     });
     DOCS.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
     EXAMS_ON.length = 0; EXAMS.filter(e => DOCS.some(d => d.cat === e.key)).forEach(e => EXAMS_ON.push(e));

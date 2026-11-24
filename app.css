@@ -229,3 +229,24 @@
   @media (prefers-reduced-motion:reduce){.dcard .btn-big,.dcard .btn-zalo,.ss-z,.zfloat{animation:none}}
   .nav a{white-space:nowrap;padding:8px 9px}
   @media (max-width:1100px){.btn-svc{display:none}}
+
+  /* Thu gọn khung ủng hộ ~1/2 chiều rộng */
+  .dbanner2{max-width:640px;margin:28px auto 10px;padding:22px}
+  .dbh h2{font-size:24px}
+  .dbh h2 span{font-size:16px;margin-top:8px}
+  .dbh p{font-size:15px;margin-bottom:14px}
+  .dopt{gap:12px}
+  .dcard{padding:16px}
+  .dcard h3{font-size:18px;margin:6px 0 4px}
+  .dcard p{font-size:14.5px;margin-bottom:10px}
+  .dcard .small{font-size:13px}
+  .dtag{font-size:13px;padding:2px 12px}
+  .svcs{gap:5px;margin-bottom:8px}
+  .svcs li{font-size:14.5px;padding:6px 10px}
+  .dcard .uses{display:none}
+  .dcard .goal{margin-bottom:12px}
+  .dcard .btn-big{font-size:16px;padding:12px 14px}
+  @media (max-width:720px){.dbh h2{font-size:22px}.dbh h2 span{font-size:15px}}
+  .top .wrap{gap:10px}
+  .nav a{padding:8px 7px;font-size:14.5px}
+  @media (max-width:1240px){.btn-svc{display:none}}
