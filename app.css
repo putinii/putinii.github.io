@@ -171,3 +171,30 @@
   .dcard .uses span{background:var(--warm-2)}
   .dcard .goal .bar{background:#f6e0d6}
   .dcard .goal{margin-bottom:14px}
+  /* Nổi bật hơn */
+  .dbanner2{background:linear-gradient(135deg,#fff1eb 0%,#ffe3d3 50%,#e6edff 100%);border:2px solid #f3b79e;box-shadow:0 10px 30px rgba(224,86,47,.15);padding:30px}
+  .dbh h2{font-size:30px;font-weight:800;color:#d9461c}
+  .dbh p{font-size:17px;color:var(--ink)}
+  .dcard{border-width:2px;padding:24px;box-shadow:0 6px 18px rgba(21,32,51,.08)}
+  .dcard:first-child{border-color:#f3a383}
+  .dcard.svc{border-color:#8aa2f0}
+  .dcard h3{font-size:23px;font-weight:800}
+  .dcard:first-child h3{color:#d9461c}
+  .dcard.svc h3{color:var(--brand)}
+  .dcard p{font-size:17px}
+  .dcard .small{font-size:15px;color:var(--ink);font-style:italic}
+  .dtag{font-size:14px;padding:4px 14px}
+  .svcs li{font-size:17px;font-weight:600;padding:9px 14px;background:#dde6ff;color:#1a2f80}
+  .dcard .uses span{font-size:14.5px}
+  .dcard .btn-big{font-size:19px;padding:16px 24px;box-shadow:0 6px 16px rgba(224,86,47,.35)}
+  .dcard .btn-zalo{box-shadow:0 6px 16px rgba(36,72,198,.35)}
+  .svcmini{font-size:15.5px;color:var(--ink);background:#fff4d6;border:2px solid #f5c443;padding:12px 14px;font-weight:500}
+  .svcmini b{color:#b45309}
+  .svcmini a{color:#fff;background:var(--brand);padding:3px 10px;border-radius:8px;display:inline-block;margin-top:4px}
+  @media (max-width:720px){.dbh h2{font-size:24px}.dcard h3{font-size:20px}}
+  .modal #ovTitle{font-size:24px;font-weight:800;color:#d9461c}
+  .modal .sub{font-size:16px;color:var(--ink)}
+  .modal .later{font-size:15px}
+  .mini b{font-size:17px}
+  .mini p{font-size:14px;color:var(--ink)}
+  .panel .svcmini{margin:0 0 14px}
