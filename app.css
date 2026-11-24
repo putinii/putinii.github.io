@@ -334,3 +334,8 @@
     .badges .bd:first-child{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .bd{font-size:10.5px}
   }
+
+/* Lượt xem cạnh tiêu đề */
+.phead h1 .vc{display:inline-flex;align-items:center;gap:4px;vertical-align:middle;margin-left:8px;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.75);border:1px solid rgba(0,0,0,.08);font-size:14px;font-weight:600;color:#334;white-space:nowrap}
+.phead h1 .vc b{font-weight:800;color:#1d3fae}
+@media (max-width:760px){.phead h1 .vc{font-size:12px;padding:2px 8px;margin-left:4px}}

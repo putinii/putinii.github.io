@@ -657,7 +657,7 @@ function viewDoc(d) {
   $("#view").innerHTML = `<div class="wrap">
     <div class="crumb"><a href="/#">Trang chủ</a> › <a href="/#${d.cat}">${esc(c.short)}</a> › ${esc(t.name)}</div>
     <div class="phead" style="background:${c.color}"><div class="ic">${t.icon}</div>
-      <div><h1>${esc(d.title)}</h1><p>${esc(c.name)} · ${esc(t.name)}${d.series ? " · " + esc(d.series) : ""}${d.date ? " · Cập nhật " + d.date.split("-").reverse().join("/") : ""}</p></div></div>
+      <div><h1>${esc(d.title)} <span class="vc" id="vc" title="Lượt xem thực tế">👁 <b>…</b> lượt xem</span></h1><p>${esc(c.name)} · ${esc(t.name)}${d.series ? " · " + esc(d.series) : ""}${d.date ? " · Cập nhật " + d.date.split("-").reverse().join("/") : ""}</p></div></div>
     <div class="cols">
       <div style="display:flex;flex-direction:column;gap:20px">
         <div class="panel intro"><h3>Giới thiệu</h3>${introOf(d)}</div>
@@ -679,8 +679,27 @@ function viewDoc(d) {
     ${related.length ? `<section class="block"><div class="sec-h"><h2>Tài liệu cùng mục</h2></div>${grid(related)}</section>` : ""}
   </div>`;
   makeQR($("#qrMini"), 86, 0);
+  countView(d.id);
   document.querySelectorAll("[data-dl]").forEach(b => b.onclick = () => openDonate({ url: b.dataset.dl, size: b.dataset.size }));
   window.scrollTo(0, 0);
+}
+
+/* ---------- Lượt xem thật (Abacus counter, đếm 1 lần/phiên/tài liệu) ---------- */
+function countView(id) {
+  const el = document.getElementById("vc"); if (!el) return;
+  const key = String(id).replace(/[^A-Za-z0-9_.-]/g, "").slice(0, 60);
+  const show = n => { const b = el.querySelector("b"); if (b) b.textContent = Number(n).toLocaleString("vi-VN"); el.style.display = ""; };
+  let cached = null; try { cached = localStorage.getItem("vc_" + key); } catch (e) {}
+  if (cached !== null) show(cached); else el.style.display = "none";
+  const bot = /bot|crawl|spider|slurp|preview|lighthouse/i.test(navigator.userAgent);
+  let seen = false; try { seen = sessionStorage.getItem("v_" + key) === "1"; } catch (e) {}
+  const op = (bot || seen) ? "get" : "hit";
+  const ctl = window.AbortController ? new AbortController() : null; if (ctl) setTimeout(() => ctl.abort(), 12000);
+  fetch("https://abacus.jasoncameron.dev/" + op + "/hoclieuxanh-tailieu/" + key, ctl ? { signal: ctl.signal } : {})
+    .then(r => r.ok ? r.json() : r.status === 404 ? { value: 0 } : Promise.reject())
+    .then(j => { const n = Number(j.value) || 0; show(n);
+      try { localStorage.setItem("vc_" + key, String(n)); if (op === "hit") sessionStorage.setItem("v_" + key, "1"); } catch (e) {} })
+    .catch(() => {});
 }
 
 /* ---------- VietQR (chuẩn NAPAS/EMVCo) ---------- */
