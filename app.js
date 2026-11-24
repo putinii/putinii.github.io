@@ -520,7 +520,7 @@ function donateBanner() {
   const g = CONFIG.goal, pct = Math.min(100, Math.round(g.current / g.target * 100));
   return `<div class="dbanner2">
     <div class="dbh">
-      <h2>💚 Giữ kho tài liệu luôn miễn phí — thầy cô chọn 1 trong 2 cách</h2>
+      <h2>💚 Giữ kho tài liệu luôn miễn phí<br><span>Thầy cô chọn 1 trong 2 cách ủng hộ 👇</span></h2>
       <p>Toàn bộ tài liệu trên web đều tải miễn phí, không cần đăng ký. Mỗi tháng web vẫn tốn phí tên miền, lưu trữ và thời gian biên soạn đề mới.</p>
     </div>
     <div class="dopt">
@@ -544,6 +544,27 @@ function donateBanner() {
   </div>`;
 }
 
+function svcStrip() {
+  return `<div class="svcstrip">
+    <div class="ss-t"><b>🤝 Nhóm quản trị web nhận hỗ trợ:</b> <span>SKKN</span><span>Bài thi GVG</span><span>Đề thi</span><span>Game dạy học</span><span>Bài dự thi</span></div>
+    <div class="ss-b"><a class="ss-z" data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">💬 Zalo ${esc(CONFIG.servicePhone)}</a><button class="ss-d" data-donate>☕ Ủng hộ web</button></div>
+  </div>`;
+}
+/* Nút Zalo nổi + nút "Dịch vụ GV" trên thanh đầu trang */
+(function () {
+  const f = document.createElement("a");
+  f.className = "zfloat"; f.href = CONFIG.serviceZalo; f.target = "_blank"; f.rel = "noopener"; f.setAttribute("data-service", "");
+  f.innerHTML = `<i>💬</i><span>Đặt SKKN · GVG · Đề thi<br><b>Zalo ${esc(CONFIG.servicePhone)}</b></span>`;
+  document.body.appendChild(f);
+  const hd = document.getElementById("hdDonate");
+  if (hd) {
+    const b = document.createElement("a");
+    b.className = "btn-svc"; b.href = CONFIG.serviceZalo; b.target = "_blank"; b.rel = "noopener"; b.setAttribute("data-service", "");
+    b.textContent = "🤝 Dịch vụ GV";
+    hd.parentNode.insertBefore(b, hd);
+  }
+})();
+
 /* ---------- Trang chủ ---------- */
 function viewHome(anchor) {
   $("#view").innerHTML = `
@@ -558,6 +579,7 @@ function viewHome(anchor) {
   </div></div>
 
   <div class="wrap">
+    ${donateBanner()}
     <section class="block" id="cac-lop">
       <div class="sec-h"><div><h2>Tài liệu theo lớp</h2><p>Global Success, i-Learn Smart World, Friends Plus, Bright…</p></div></div>
       <div class="levels">${LEVELS.map(l => `
@@ -579,8 +601,6 @@ function viewHome(anchor) {
       <div class="sec-h"><div><h2>Mới cập nhật</h2><p>Tài liệu vừa được thêm vào kho</p></div></div>
       ${grid(DOCS.filter(d => d.date).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 8))}
     </section>
-
-    ${donateBanner()}
   </div>`;
   $("#sf").onsubmit = e => { e.preventDefault(); state.q = $("#sq").value.trim(); go("tim-kiem"); };
   if (anchor) document.getElementById(anchor)?.scrollIntoView();
@@ -599,6 +619,7 @@ function viewCat(key) {
   $("#view").innerHTML = `<div class="wrap">
     <div class="crumb"><a href="/#">Trang chủ</a> › <a href="/#${isGrade ? "cac-lop" : "chung-chi"}">${esc(c.group)}</a> › ${esc(c.short)}</div>
     <div class="phead" style="background:${c.color}"><div class="ic">${c.icon}</div><div><h1>${esc(c.name)}</h1><p>${esc(c.desc)}</p></div></div>
+    ${svcStrip()}
     <div class="filters">
       ${isGrade ? `<div class="chips"><b>Chọn lớp:</b>${siblings}</div>` : ""}
       ${types.length > 1 ? `<div class="chips"><b>Loại:</b><button class="chip ${state.type==="all"?"on":""}" data-type="all">Tất cả</button>${types.map(t => `<button class="chip ${state.type===t?"on":""}" data-type="${t}">${TYPES[t].icon} ${esc(TYPES[t].name)}</button>`).join("")}</div>` : ""}
