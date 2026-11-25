@@ -39,6 +39,9 @@ const CONFIG = {
   // Cách ủng hộ thứ 2: đặt dịch vụ của nhóm quản trị web
   serviceZalo: "https://zalo.me/0388202311",
   servicePhone: "0388 202 311",
+  supportPage: "/ho-tro-giao-vien",
+  // Ảnh giao dịch thành công (đã che tên & nội dung) – để trống thì ẩn mục này: [{src:"/img/gd1.jpg", cap:"..."}]
+  proofs: [],
   services: ["📝 Sáng kiến kinh nghiệm (SKKN)", "🏆 Bài thi Giáo viên giỏi", "📄 Đề thi & ma trận theo yêu cầu", "🎮 Game dạy học", "📑 Bài dự thi theo quy định"],              // để người dùng báo link hỏng / xin tài liệu
   footer: "Tài liệu chỉ phục vụ mục đích học tập, phi thương mại. Nếu bạn là tác giả và muốn gỡ tài liệu, vui lòng liên hệ."
 };
@@ -544,7 +547,7 @@ function donateBanner() {
 }
 function svcStrip() {
   return `<div class="svcstrip">
-    <div class="ss-t"><b>🤝 Hỗ trợ giáo viên:</b> <span>SKKN</span><span>Bài thi GVG</span><span>Đề thi</span><span>Game dạy học</span><span>Bài dự thi</span></div>
+    <div class="ss-t"><a href="/ho-tro-giao-vien"><b>🤝 Hỗ trợ giáo viên:</b></a> <span>SKKN</span><span>Bài thi GVG</span><span>Đề thi</span><span>Game dạy học</span><span>Bài dự thi</span></div>
     <div class="ss-b"><a class="ss-z" data-service href="${esc(CONFIG.serviceZalo)}" target="_blank" rel="noopener">💬 Zalo ${esc(CONFIG.servicePhone)}</a><button class="ss-d" data-donate>☕ Ủng hộ web</button></div>
   </div>`;
 }
@@ -557,7 +560,7 @@ function svcStrip() {
   const hd = document.getElementById("hdDonate");
   if (hd) {
     const b = document.createElement("a");
-    b.className = "btn-svc"; b.href = CONFIG.serviceZalo; b.target = "_blank"; b.rel = "noopener"; b.setAttribute("data-service", "");
+    b.className = "btn-svc"; b.href = CONFIG.supportPage;
     b.textContent = "🤝 Hỗ trợ giáo viên";
     hd.parentNode.insertBefore(b, hd);
   }
@@ -771,17 +774,62 @@ $("#ov").onclick = e => { if (e.target.id === "ov") closeDonate(); };
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeDonate(); });
 document.addEventListener("click", e => { if (e.target.closest("[data-donate]")) openDonate(); });
 
+/* ---------- Trang Hỗ trợ giáo viên ---------- */
+function viewSupport() {
+  const Z = esc(CONFIG.serviceZalo), P = esc(CONFIG.servicePhone);
+  const svc = [
+    ["📄", "Đề thi & ma trận theo yêu cầu", "Đề kiểm tra giữa kì, cuối kì, đề HSG, đề ôn thi vào 10 – có ma trận, bản đặc tả, đáp án và hướng dẫn chấm theo đúng quy định."],
+    ["🏆", "Bài thi Giáo viên giỏi", "Hỗ trợ chuẩn bị bài dạy thi GVG các cấp: thiết kế tiến trình, hoạt động, phiếu học tập và bài giảng trình chiếu."],
+    ["🖥️", "Bài giảng PowerPoint, E-learning", "Bài giảng điện tử đẹp, đúng sách Global Success và các bộ sách khác, có hiệu ứng, file nghe và trò chơi củng cố."],
+    ["📝", "Sáng kiến kinh nghiệm (SKKN)", "Hỗ trợ lên ý tưởng, xây dựng khung, minh chứng và trình bày SKKN đúng mẫu, đúng thể thức."],
+    ["🎮", "Game dạy học", "Game PowerPoint khởi động, ôn tập theo nội dung bài học thầy cô yêu cầu – thay câu hỏi dễ dàng."],
+    ["📑", "Bài dự thi theo quy định", "Bài dự thi, hồ sơ, sản phẩm theo yêu cầu của các cuộc thi dành cho giáo viên và học sinh."]
+  ];
+  const steps = [["Nhắn Zalo", "Gửi yêu cầu, mẫu và thời hạn cần hoàn thành."], ["Trao đổi & báo giá", "Thống nhất nội dung, chi phí và thời gian bàn giao."], ["Gửi bản nháp", "Thầy cô xem và góp ý, nhóm chỉnh sửa theo góp ý."], ["Bàn giao file gốc", "Nhận file Word / PowerPoint đầy đủ, dễ chỉnh sửa."]];
+  const proofs = (CONFIG.proofs || []).filter(p => p && p.src);
+  document.title = "Hỗ trợ giáo viên – Đề thi, bài thi GVG, bài giảng, SKKN | " + CONFIG.siteName;
+  $("#view").innerHTML = `<div class="sup">
+  <section class="sup-hero"><div class="wrap">
+    <div class="crumb"><a href="/#">Trang chủ</a> › Hỗ trợ giáo viên</div>
+    <h1>🤝 Đội ngũ hỗ trợ giáo viên</h1>
+    <p class="lead">Đứng sau <b>Kho Tiếng Anh Free</b> là nhóm thầy cô có nhiều năm kinh nghiệm giảng dạy và biên soạn tài liệu. Ngoài việc chia sẻ tài liệu miễn phí, nhóm nhận hỗ trợ thầy cô các công việc chuyên môn: <b>đề thi, bài thi GVG, bài giảng PowerPoint, SKKN…</b></p>
+    <div class="sup-cta"><a class="sup-z" data-service href="${Z}" target="_blank" rel="noopener">💬 Nhắn Zalo ${P}</a><span>Tư vấn miễn phí · phản hồi nhanh</span></div>
+  </div></section>
+  <div class="wrap">
+    <section class="block"><div class="sec-h"><h2>Về đội ngũ</h2></div>
+      <div class="sup-about">
+        <div><b>👩‍🏫 Giáo viên đứng lớp nhiều năm</b><p>Hiểu rõ chương trình GDPT 2018, sách Global Success và yêu cầu thực tế khi ra đề, dự giờ, thi GVG.</p></div>
+        <div><b>📚 Kinh nghiệm biên soạn tài liệu</b><p>Hàng trăm bộ đề, đề cương, bài giảng trên kho tài liệu này do chính nhóm biên soạn và cập nhật hằng ngày.</p></div>
+        <div><b>🔒 Làm việc rõ ràng, bảo mật</b><p>Thống nhất yêu cầu và thời gian trước khi làm; thông tin và sản phẩm của thầy cô được giữ kín.</p></div>
+      </div></section>
+    <section class="block"><div class="sec-h"><h2>Nhóm nhận hỗ trợ</h2></div>
+      <div class="sup-grid">${svc.map(x => `<div class="sup-card"><i>${x[0]}</i><h3>${x[1]}</h3><p>${x[2]}</p></div>`).join("")}</div></section>
+    <section class="block"><div class="sec-h"><h2>Quy trình làm việc</h2></div>
+      <ol class="sup-steps">${steps.map(x => `<li><b>${x[0]}</b><span>${x[1]}</span></li>`).join("")}</ol></section>
+    ${proofs.length ? `<section class="block"><div class="sec-h"><h2>Một số giao dịch thành công</h2><p>Ảnh chụp từ Zalo, đã che tên và nội dung để bảo mật cho thầy cô.</p></div>
+      <div class="sup-proofs">${proofs.map(p => `<figure><img src="${esc(p.src)}" alt="Giao dịch thành công" loading="lazy">${p.cap ? `<figcaption>${esc(p.cap)}</figcaption>` : ""}</figure>`).join("")}</div></section>` : ""}
+    <section class="sup-end">
+      <h2>Thầy cô cần hỗ trợ?</h2>
+      <p>Nhận làm đề thi, bài thi GVG, bài giảng PowerPoint, SKKN… Liên hệ Zalo để được tư vấn.</p>
+      <a class="sup-z" data-service href="${Z}" target="_blank" rel="noopener">💬 Zalo ${P}</a>
+    </section>
+  </div></div>`;
+  window.scrollTo(0, 0);
+}
+
 /* ---------- Điều hướng ---------- */
 function go(h) { if (location.hash.slice(1) === h) route(); else location.hash = h; }
 function route() {
   closeDonate();
   document.title = CONFIG.siteName + " – Tài liệu Tiếng Anh miễn phí";
   const h = location.hash.slice(1);
+  if (!h && window.__PAGE === "hotro") return viewSupport();
   if (!h && window.__CAT) { shown = 100000; state.type = "all"; state.series = "all"; return viewCat(window.__CAT); }
   if (!h && window.__DOC) { const d0 = DOCS.find(x => x.id === window.__DOC); if (d0) return viewDoc(d0); return; }
   if (h.startsWith("tl-") && window.__SLUG && window.__SLUG[h.slice(3)]) return location.replace("/tai-lieu/" + window.__SLUG[h.slice(3)]);
   document.querySelectorAll(".nav a").forEach(a => a.classList.toggle("on", a.getAttribute("href") === "/#" + h || (!h && a.getAttribute("href") === "/#")));
   if (h.startsWith("tl-")) { const d = DOCS.find(x => "tl-" + x.id === h); if (d) return viewDoc(d); }
+  if (h === "ho-tro-giao-vien") return location.replace(CONFIG.supportPage);
   if (h === "tim-kiem") return viewSearch();
   if (catInfo(h)) { shown = PAGE; state.type = "all"; state.series = "all"; return viewCat(h); }
   viewHome(h === "cac-lop" || h === "chung-chi" ? h : null);
