@@ -612,7 +612,7 @@ function viewHome(anchor) {
 /* ---------- Trang danh mục ---------- */
 function viewCat(key) {
   const c = catInfo(key);
-  if (!c) { $("#view").innerHTML = '<div class="wrap"><p style="padding:40px 0">Đang tải…</p></div>'; return; }
+  if (!c) return; // chờ data.json, giữ nội dung dựng sẵn
   const all = DOCS.filter(d => d.cat === key);
   const types = [...new Set(all.map(d => d.type))];
   const series = [...new Set(all.map(d => d.series).filter(Boolean))];
