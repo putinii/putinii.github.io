@@ -792,13 +792,13 @@ function viewSupport() {
   <section class="sup-hero"><div class="wrap">
     <div class="crumb"><a href="/#">Trang chủ</a> › Hỗ trợ giáo viên</div>
     <h1>🤝 Đội ngũ hỗ trợ giáo viên</h1>
-    <p class="lead">Đứng sau <b>Kho Tiếng Anh Free</b> là nhóm thầy cô có nhiều năm kinh nghiệm giảng dạy và biên soạn tài liệu. Ngoài việc chia sẻ tài liệu miễn phí, nhóm nhận hỗ trợ thầy cô các công việc chuyên môn: <b>đề thi, bài thi GVG, bài giảng PowerPoint, SKKN…</b></p>
+    <p class="lead">Đứng sau <b>Kho Tiếng Anh Free</b> là nhóm thầy cô có <b>trên 10 năm kinh nghiệm</b> giảng dạy và biên soạn tài liệu. Ngoài việc chia sẻ tài liệu miễn phí, nhóm nhận hỗ trợ thầy cô các công việc chuyên môn: <b>đề thi, bài thi GVG, bài giảng PowerPoint, SKKN…</b></p>
     <div class="sup-cta"><a class="sup-z" data-service href="${Z}" target="_blank" rel="noopener">💬 Nhắn Zalo ${P}</a><span>Tư vấn miễn phí · phản hồi nhanh</span></div>
   </div></section>
   <div class="wrap">
     <section class="block"><div class="sec-h"><h2>Về đội ngũ</h2></div>
       <div class="sup-about">
-        <div><b>👩‍🏫 Giáo viên đứng lớp nhiều năm</b><p>Hiểu rõ chương trình GDPT 2018, sách Global Success và yêu cầu thực tế khi ra đề, dự giờ, thi GVG.</p></div>
+        <div><b>👩‍🏫 Trên 10 năm đứng lớp</b><p>Hiểu rõ chương trình GDPT 2018, sách Global Success và yêu cầu thực tế khi ra đề, dự giờ, thi GVG.</p></div>
         <div><b>📚 Kinh nghiệm biên soạn tài liệu</b><p>Hàng trăm bộ đề, đề cương, bài giảng trên kho tài liệu này do chính nhóm biên soạn và cập nhật hằng ngày.</p></div>
         <div><b>🔒 Làm việc rõ ràng, bảo mật</b><p>Thống nhất yêu cầu và thời gian trước khi làm; thông tin và sản phẩm của thầy cô được giữ kín.</p></div>
       </div></section>
