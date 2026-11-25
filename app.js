@@ -847,7 +847,7 @@ const LEGAL = {
   "gioi-thieu": { title: "Giới thiệu", html: `
     <p class="lg-lead"><b>Kho Tiếng Anh Free</b> (tailieu.hoclieuxanh.com) là trang chia sẻ tài liệu Tiếng Anh miễn phí cho giáo viên, phụ huynh và học sinh từ lớp 1 đến lớp 12, thuộc hệ thống <b>Học Liệu Xanh</b> (hoclieuxanh.com).</p>
     <h2>Chúng tôi là ai</h2>
-    <p>Trang do nhóm giáo viên Tiếng Anh có <b>trên 10 năm kinh nghiệm</b> giảng dạy và biên soạn tài liệu xây dựng và quản lý. Người phụ trách: <b>Nguyễn Văn Cường</b>.</p>
+    <p>Trang do nhóm giáo viên Tiếng Anh có <b>trên 10 năm kinh nghiệm</b> giảng dạy và biên soạn tài liệu xây dựng và quản lý. Người phụ trách: <b>Nguyễn Văn Cương</b>.</p>
     <h2>Trang có gì</h2>
     <ul><li>Đề kiểm tra giữa kì, cuối kì, đề cương ôn tập có đáp án, bám sát chương trình GDPT 2018 (Global Success và các bộ sách khác).</li>
     <li>Tài liệu ôn thi vào lớp 10, thi tốt nghiệp THPT, đánh giá năng lực (V-ACT), học sinh giỏi.</li>
