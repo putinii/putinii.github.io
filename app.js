@@ -777,41 +777,65 @@ document.addEventListener("click", e => { if (e.target.closest("[data-donate]"))
 /* ---------- Trang Hỗ trợ giáo viên ---------- */
 function viewSupport() {
   const Z = esc(CONFIG.serviceZalo), P = esc(CONFIG.servicePhone);
+  const J = window.__PVJ || {}, TH = (id, w) => "https://drive.google.com/thumbnail?id=" + id + "&sz=w" + w;
+  const withImg = DOCS.filter(d => J[d.id] && J[d.id].p && J[d.id].p[0]);
+  const games = withImg.filter(d => d.cat === "game-day-hoc"), docs = withImg.filter(d => d.cat !== "game-day-hoc");
+  const show = [...games.slice(0, 4), ...docs.slice(0, 4)];
+  const hero3 = [games[0], docs[0], games[1]].filter(Boolean);
+  const nDocs = DOCS.length, nGame = DOCS.filter(d => d.cat === "game-day-hoc").length;
+  const round = n => n >= 20 ? Math.floor(n / 10) * 10 + "+" : String(n);
   const svc = [
-    ["📄", "Đề thi & ma trận theo yêu cầu", "Đề kiểm tra giữa kì, cuối kì, đề HSG, đề ôn thi vào 10 – có ma trận, bản đặc tả, đáp án và hướng dẫn chấm theo đúng quy định."],
-    ["🏆", "Bài thi Giáo viên giỏi", "Hỗ trợ chuẩn bị bài dạy thi GVG các cấp: thiết kế tiến trình, hoạt động, phiếu học tập và bài giảng trình chiếu."],
-    ["🖥️", "Bài giảng PowerPoint, E-learning", "Bài giảng điện tử đẹp, đúng sách Global Success và các bộ sách khác, có hiệu ứng, file nghe và trò chơi củng cố."],
-    ["📝", "Sáng kiến kinh nghiệm (SKKN)", "Hỗ trợ lên ý tưởng, xây dựng khung, minh chứng và trình bày SKKN đúng mẫu, đúng thể thức."],
-    ["🎮", "Game dạy học", "Game PowerPoint khởi động, ôn tập theo nội dung bài học thầy cô yêu cầu – thay câu hỏi dễ dàng."],
-    ["📑", "Bài dự thi theo quy định", "Bài dự thi, hồ sơ, sản phẩm theo yêu cầu của các cuộc thi dành cho giáo viên và học sinh."]
+    ["📄", "Đề thi & ma trận", "Đề giữa kì, cuối kì, HSG, ôn thi vào 10 – đủ ma trận, bản đặc tả, đáp án, hướng dẫn chấm đúng quy định.", "c1"],
+    ["🏆", "Bài thi Giáo viên giỏi", "Thiết kế tiến trình, hoạt động, phiếu học tập và bài giảng trình chiếu cho thi GVG các cấp.", "c2"],
+    ["🖥️", "Bài giảng PowerPoint, E-learning", "Bài giảng điện tử đẹp, đúng sách Global Success và các bộ sách khác, có hiệu ứng, file nghe, trò chơi.", "c3"],
+    ["📝", "Sáng kiến kinh nghiệm", "Hỗ trợ ý tưởng, khung, minh chứng và trình bày SKKN đúng mẫu, đúng thể thức.", "c4"],
+    ["🎮", "Game dạy học", "Game PowerPoint khởi động, ôn tập theo bài học thầy cô yêu cầu – thay câu hỏi dễ dàng.", "c5"],
+    ["📑", "Bài dự thi theo quy định", "Bài dự thi, hồ sơ, sản phẩm theo yêu cầu các cuộc thi dành cho giáo viên và học sinh.", "c6"]
   ];
-  const steps = [["Nhắn Zalo", "Gửi yêu cầu, mẫu và thời hạn cần hoàn thành."], ["Trao đổi & báo giá", "Thống nhất nội dung, chi phí và thời gian bàn giao."], ["Gửi bản nháp", "Thầy cô xem và góp ý, nhóm chỉnh sửa theo góp ý."], ["Bàn giao file gốc", "Nhận file Word / PowerPoint đầy đủ, dễ chỉnh sửa."]];
+  const steps = [["💬", "Nhắn Zalo", "Gửi yêu cầu, mẫu và thời hạn."], ["🤝", "Trao đổi & báo giá", "Thống nhất nội dung, chi phí, thời gian."], ["✍️", "Gửi bản nháp", "Thầy cô góp ý, nhóm chỉnh sửa."], ["📦", "Bàn giao file gốc", "File Word / PowerPoint dễ chỉnh sửa."]];
   const proofs = (CONFIG.proofs || []).filter(p => p && p.src);
+  const docLink = d => "/#tl-" + d.id;
   document.title = "Hỗ trợ giáo viên – Đề thi, bài thi GVG, bài giảng, SKKN | " + CONFIG.siteName;
   $("#view").innerHTML = `<div class="sup">
-  <section class="sup-hero"><div class="wrap">
-    <div class="crumb"><a href="/#">Trang chủ</a> › Hỗ trợ giáo viên</div>
-    <h1>🤝 Đội ngũ hỗ trợ giáo viên</h1>
-    <p class="lead">Đứng sau <b>Kho Tiếng Anh Free</b> là nhóm thầy cô có <b>trên 10 năm kinh nghiệm</b> giảng dạy và biên soạn tài liệu. Ngoài việc chia sẻ tài liệu miễn phí, nhóm nhận hỗ trợ thầy cô các công việc chuyên môn: <b>đề thi, bài thi GVG, bài giảng PowerPoint, SKKN…</b></p>
-    <div class="sup-cta"><a class="sup-z" data-service href="${Z}" target="_blank" rel="noopener">💬 Nhắn Zalo ${P}</a><span>Tư vấn miễn phí · phản hồi nhanh</span></div>
+  <section class="sup-hero"><span class="blob b1"></span><span class="blob b2"></span><div class="wrap sup-hero-in">
+    <div class="sup-hero-t">
+      <div class="crumb"><a href="/#">Trang chủ</a> › Hỗ trợ giáo viên</div>
+      <span class="sup-badge">⭐ Đội ngũ giáo viên · Trên 10 năm kinh nghiệm</span>
+      <h1>Đồng hành cùng thầy cô<br><em>trong mọi công việc chuyên môn</em></h1>
+      <p class="lead">Đứng sau <b>Kho Tiếng Anh Free</b> là nhóm thầy cô có <b>trên 10 năm kinh nghiệm</b> giảng dạy và biên soạn tài liệu. Nhóm nhận hỗ trợ <b>đề thi, bài thi GVG, bài giảng PowerPoint, SKKN…</b> – làm kỹ, đúng hạn, bảo mật.</p>
+      <div class="sup-cta"><a class="sup-z pulse" data-service href="${Z}" target="_blank" rel="noopener">💬 Nhắn Zalo ${P}</a><span>✓ Tư vấn miễn phí<br>✓ Phản hồi nhanh</span></div>
+    </div>
+    <div class="sup-hero-v">
+      <div class="stack">${hero3.map((d, i) => `<img class="s${i}" src="${TH(J[d.id].p[0], 600)}" alt="">`).join("") || `<div class="ph">📚</div>`}</div>
+      <div class="medal"><b>10+</b><span>năm<br>kinh nghiệm</span></div>
+    </div>
   </div></section>
+  <div class="sup-stats wrap">
+    <div><b>10+</b><span>năm đứng lớp & biên soạn</span></div>
+    <div><b>${round(nDocs)}</b><span>bộ tài liệu đã chia sẻ miễn phí</span></div>
+    <div><b>${round(nGame)}</b><span>game dạy học PowerPoint</span></div>
+    <div><b>1–12</b><span>đủ các khối lớp & kỳ thi</span></div>
+  </div>
   <div class="wrap">
-    <section class="block"><div class="sec-h"><h2>Về đội ngũ</h2></div>
+    <section class="block"><div class="sup-h"><span>Dịch vụ</span><h2>Nhóm nhận hỗ trợ thầy cô</h2></div>
+      <div class="sup-grid">${svc.map(x => `<div class="sup-card ${x[3]}"><i>${x[0]}</i><h3>${x[1]}</h3><p>${x[2]}</p><a data-service href="${Z}" target="_blank" rel="noopener">Nhận tư vấn →</a></div>`).join("")}</div></section>
+    ${show.length ? `<section class="block"><div class="sup-h"><span>Sản phẩm thật</span><h2>Một số sản phẩm do nhóm biên soạn</h2><p>Tất cả đều có trên web – bấm để xem và tải miễn phí.</p></div>
+      <div class="sup-show">${show.map(d => `<a href="${docLink(d)}"><img src="${TH(J[d.id].p[0], 500)}" alt="${esc(d.title)}" loading="lazy"><span>${esc(d.title)}</span></a>`).join("")}</div></section>` : ""}
+    <section class="block sup-why"><div class="sup-h"><span>Vì sao chọn chúng tôi</span><h2>Uy tín được xây từ chất lượng</h2></div>
       <div class="sup-about">
-        <div><b>👩‍🏫 Trên 10 năm đứng lớp</b><p>Hiểu rõ chương trình GDPT 2018, sách Global Success và yêu cầu thực tế khi ra đề, dự giờ, thi GVG.</p></div>
-        <div><b>📚 Kinh nghiệm biên soạn tài liệu</b><p>Hàng trăm bộ đề, đề cương, bài giảng trên kho tài liệu này do chính nhóm biên soạn và cập nhật hằng ngày.</p></div>
-        <div><b>🔒 Làm việc rõ ràng, bảo mật</b><p>Thống nhất yêu cầu và thời gian trước khi làm; thông tin và sản phẩm của thầy cô được giữ kín.</p></div>
+        <div><i>👩‍🏫</i><b>Trên 10 năm đứng lớp</b><p>Hiểu rõ chương trình GDPT 2018, sách Global Success và yêu cầu thực tế khi ra đề, dự giờ, thi GVG.</p></div>
+        <div><i>📚</i><b>Biên soạn thật, cập nhật mỗi ngày</b><p>Hàng trăm bộ đề, đề cương, bài giảng trên kho tài liệu này do chính nhóm biên soạn và chia sẻ miễn phí.</p></div>
+        <div><i>🔒</i><b>Rõ ràng & bảo mật</b><p>Thống nhất yêu cầu, chi phí và thời hạn trước khi làm; thông tin và sản phẩm của thầy cô được giữ kín.</p></div>
       </div></section>
-    <section class="block"><div class="sec-h"><h2>Nhóm nhận hỗ trợ</h2></div>
-      <div class="sup-grid">${svc.map(x => `<div class="sup-card"><i>${x[0]}</i><h3>${x[1]}</h3><p>${x[2]}</p></div>`).join("")}</div></section>
-    <section class="block"><div class="sec-h"><h2>Quy trình làm việc</h2></div>
-      <ol class="sup-steps">${steps.map(x => `<li><b>${x[0]}</b><span>${x[1]}</span></li>`).join("")}</ol></section>
-    ${proofs.length ? `<section class="block"><div class="sec-h"><h2>Một số giao dịch thành công</h2><p>Ảnh chụp từ Zalo, đã che tên và nội dung để bảo mật cho thầy cô.</p></div>
+    <section class="block"><div class="sup-h"><span>Quy trình</span><h2>4 bước đơn giản</h2></div>
+      <ol class="sup-steps">${steps.map(x => `<li><i>${x[0]}</i><b>${x[1]}</b><span>${x[2]}</span></li>`).join("")}</ol></section>
+    ${proofs.length ? `<section class="block"><div class="sup-h"><span>Khách hàng</span><h2>Một số giao dịch thành công</h2><p>Ảnh chụp từ Zalo, đã che tên và nội dung để bảo mật cho thầy cô.</p></div>
       <div class="sup-proofs">${proofs.map(p => `<figure><img src="${esc(p.src)}" alt="Giao dịch thành công" loading="lazy">${p.cap ? `<figcaption>${esc(p.cap)}</figcaption>` : ""}</figure>`).join("")}</div></section>` : ""}
-    <section class="sup-end">
+    <section class="sup-end"><span class="blob b3"></span>
       <h2>Thầy cô cần hỗ trợ?</h2>
-      <p>Nhận làm đề thi, bài thi GVG, bài giảng PowerPoint, SKKN… Liên hệ Zalo để được tư vấn.</p>
-      <a class="sup-z" data-service href="${Z}" target="_blank" rel="noopener">💬 Zalo ${P}</a>
+      <p>Nhận làm <b>đề thi, bài thi GVG, bài giảng PowerPoint, SKKN…</b> Liên hệ ngay để được tư vấn miễn phí.</p>
+      <a class="sup-z pulse" data-service href="${Z}" target="_blank" rel="noopener">💬 Zalo ${P}</a>
+      <small>Hoặc gọi / nhắn số <b>${P}</b></small>
     </section>
   </div></div>`;
   window.scrollTo(0, 0);
@@ -1001,7 +1025,7 @@ route();
   };
 
   fetch("/data.json", { cache: "no-cache" }).then(r => r.json()).then(j => {
-    PV = j; window.__SLUG = j.__slug || {};
+    PV = j; window.__PVJ = j; window.__SLUG = j.__slug || {};
     (j.__cats || []).forEach(c => { if (!EXAMS.find(e => e.key === c.key)) EXAMS.push(c); });
     (j.__new || []).forEach(([id, title, cat, type, series, flags, date]) => {
       if (!DOCS.find(x => x.id === id)) DOCS.push({ id, title, cat, type, series, flags: flags ? flags.split(",") : [], date,
