@@ -504,7 +504,8 @@ $("#hdDonate").onclick = () => openDonate();
 $("#foot").innerHTML = `
   <div><h4>${esc(CONFIG.siteName)}</h4><p style="margin:0 0 8px">${esc(CONFIG.footer)}</p><p style="margin:0">Báo link hỏng / xin tài liệu: <b style="color:#fff">${esc(CONFIG.contact)}</b></p></div>
   <div><h4>Theo lớp</h4>${LEVELS.map(l => `<a href="/#lop-${l.grades[0]}">${l.name} (lớp ${l.grades[0]}–${l.grades.at(-1)})</a>`).join("")}</div>
-  <div><h4>Chứng chỉ</h4>${EXAMS_ON.slice(0,6).map(e => `<a href="/#${e.key}">${esc(e.name)}</a>`).join("")}</div>`;
+  <div><h4>Chứng chỉ</h4>${EXAMS_ON.slice(0,6).map(e => `<a href="/#${e.key}">${esc(e.name)}</a>`).join("")}</div>
+  <div><h4>Thông tin</h4><a href="/gioi-thieu">Giới thiệu</a><a href="/lien-he">Liên hệ</a><a href="/ho-tro-giao-vien">Hỗ trợ giáo viên</a><a href="/chinh-sach-bao-mat">Chính sách bảo mật</a><a href="/dieu-khoan">Điều khoản sử dụng</a></div>`;
 
 /* ---------- Thẻ tài liệu ---------- */
 function card(d) {
@@ -841,6 +842,84 @@ function viewSupport() {
   window.scrollTo(0, 0);
 }
 
+/* ---------- Trang thông tin: Giới thiệu, Liên hệ, Chính sách bảo mật, Điều khoản ---------- */
+const LEGAL = {
+  "gioi-thieu": { title: "Giới thiệu", html: `
+    <p class="lg-lead"><b>Kho Tiếng Anh Free</b> (tailieu.hoclieuxanh.com) là trang chia sẻ tài liệu Tiếng Anh miễn phí cho giáo viên, phụ huynh và học sinh từ lớp 1 đến lớp 12, thuộc hệ thống <b>Học Liệu Xanh</b> (hoclieuxanh.com).</p>
+    <h2>Chúng tôi là ai</h2>
+    <p>Trang do nhóm giáo viên Tiếng Anh có <b>trên 10 năm kinh nghiệm</b> giảng dạy và biên soạn tài liệu xây dựng và quản lý. Người phụ trách: <b>Nguyễn Văn Cường</b>.</p>
+    <h2>Trang có gì</h2>
+    <ul><li>Đề kiểm tra giữa kì, cuối kì, đề cương ôn tập có đáp án, bám sát chương trình GDPT 2018 (Global Success và các bộ sách khác).</li>
+    <li>Tài liệu ôn thi vào lớp 10, thi tốt nghiệp THPT, đánh giá năng lực (V-ACT), học sinh giỏi.</li>
+    <li>Game dạy học PowerPoint, bài giảng và tài liệu chuyên môn cho giáo viên.</li></ul>
+    <p>Nhiều bộ đề trên trang do nhóm <b>tự biên soạn</b>, có đáp án và giải thích chi tiết; tài liệu mới được cập nhật hằng ngày. Tất cả đều tải miễn phí, không cần đăng ký.</p>
+    <h2>Mục tiêu</h2>
+    <p>Giúp thầy cô tiết kiệm thời gian chuẩn bị bài, giúp học sinh có nguồn ôn luyện chất lượng, đúng cấu trúc đề thi mới.</p>
+    <h2>Kênh chính thức</h2>
+    <ul><li>Zalo: <a href="https://zalo.me/0388202311" target="_blank" rel="noopener">0388 202 311</a></li>
+    <li>Fanpage: <a href="https://www.facebook.com/profile.php?id=61596536435359" target="_blank" rel="noopener">Tiếng Anh Vui Mỗi Ngày</a></li>
+    <li>TikTok: <a href="https://www.tiktok.com/@hoclieuxanh" target="_blank" rel="noopener">@hoclieuxanh</a> · YouTube: <a href="https://www.youtube.com/@alienenglish9331" target="_blank" rel="noopener">Alien English</a></li></ul>
+    <p>Xem thêm: <a href="/ho-tro-giao-vien">Đội ngũ hỗ trợ giáo viên</a> · <a href="/lien-he">Liên hệ</a>.</p>` },
+  "lien-he": { title: "Liên hệ", html: `
+    <p class="lg-lead">Thầy cô, phụ huynh và các em học sinh có thể liên hệ với Kho Tiếng Anh Free qua các kênh sau. Chúng tôi phản hồi sớm nhất có thể.</p>
+    <div class="lg-cards">
+      <a class="lg-c" href="https://zalo.me/0388202311" target="_blank" rel="noopener"><i>💬</i><b>Zalo</b><span>0388 202 311</span></a>
+      <a class="lg-c" href="https://www.facebook.com/profile.php?id=61596536435359" target="_blank" rel="noopener"><i>📘</i><b>Facebook</b><span>Tiếng Anh Vui Mỗi Ngày</span></a>
+      <a class="lg-c" href="https://www.youtube.com/@alienenglish9331" target="_blank" rel="noopener"><i>▶️</i><b>YouTube</b><span>Alien English</span></a>
+      <a class="lg-c" href="https://www.tiktok.com/@hoclieuxanh" target="_blank" rel="noopener"><i>🎵</i><b>TikTok</b><span>@hoclieuxanh</span></a>
+    </div>
+    <h2>Chúng tôi có thể giúp gì</h2>
+    <ul><li><b>Báo link hỏng, xin tài liệu:</b> gửi tên hoặc đường dẫn tài liệu qua Zalo.</li>
+    <li><b>Yêu cầu gỡ tài liệu:</b> nếu bạn là tác giả hoặc chủ sở hữu bản quyền của một tài liệu trên trang, vui lòng gửi đường dẫn tài liệu và thông tin chứng minh quyền sở hữu; chúng tôi sẽ kiểm tra và gỡ bỏ sớm nhất.</li>
+    <li><b>Hỗ trợ chuyên môn:</b> đề thi, bài thi GVG, bài giảng PowerPoint, SKKN… – xem <a href="/ho-tro-giao-vien">trang Hỗ trợ giáo viên</a>.</li>
+    <li><b>Góp ý, hợp tác:</b> mọi ý kiến đóng góp để trang tốt hơn đều được trân trọng.</li></ul>` },
+  "chinh-sach-bao-mat": { title: "Chính sách bảo mật", html: `
+    <p class="lg-lead">Chính sách này cho biết Kho Tiếng Anh Free (tailieu.hoclieuxanh.com) thu thập, sử dụng và bảo vệ thông tin của người truy cập như thế nào. Cập nhật lần cuối: 25/11/2026.</p>
+    <h2>1. Thông tin chúng tôi thu thập</h2>
+    <p>Trang <b>không yêu cầu đăng ký tài khoản</b> và không thu thập họ tên, số điện thoại hay email của bạn khi bạn xem hoặc tải tài liệu. Khi bạn truy cập, một số thông tin kỹ thuật có thể được ghi nhận tự động: loại trình duyệt, thiết bị, trang đã xem, thời gian truy cập và địa chỉ IP (ở dạng thống kê).</p>
+    <h2>2. Cookie và công nghệ tương tự</h2>
+    <ul><li><b>Google Analytics:</b> dùng cookie để thống kê lượt truy cập, giúp chúng tôi biết tài liệu nào hữu ích và cải thiện trang.</li>
+    <li><b>Lưu trữ trên trình duyệt:</b> trang lưu một số dữ liệu nhỏ (ví dụ đánh dấu tài liệu đã xem, số lượt xem gần nhất) ngay trên trình duyệt của bạn; dữ liệu này không gửi danh tính của bạn cho chúng tôi.</li>
+    <li><b>Bộ đếm lượt xem:</b> khi mở trang tài liệu, trình duyệt gửi một yêu cầu tới dịch vụ đếm của bên thứ ba (Abacus) chỉ kèm mã tài liệu để tăng số lượt xem.</li></ul>
+    <h2>3. Quảng cáo của Google</h2>
+    <p>Trang có thể hiển thị quảng cáo do Google AdSense cung cấp. Các nhà cung cấp bên thứ ba, bao gồm Google, sử dụng cookie để phân phát quảng cáo dựa trên các lần truy cập trước đây của bạn vào trang này hoặc các trang web khác. Việc Google sử dụng cookie quảng cáo cho phép Google và đối tác hiển thị quảng cáo phù hợp với bạn.</p>
+    <p>Bạn có thể tắt quảng cáo được cá nhân hóa tại <a href="https://adssettings.google.com" target="_blank" rel="noopener">Cài đặt quảng cáo của Google</a>, hoặc tắt cookie của nhà cung cấp bên thứ ba tại <a href="https://www.aboutads.info/choices" target="_blank" rel="noopener">aboutads.info</a>. Tìm hiểu thêm về cách Google sử dụng dữ liệu tại <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">policies.google.com/technologies/partner-sites</a>.</p>
+    <h2>4. Liên kết bên ngoài</h2>
+    <p>Tài liệu được lưu trên Google Drive; trang còn có liên kết tới Zalo, Facebook, YouTube, TikTok. Khi bạn bấm vào các liên kết này, chính sách bảo mật của các dịch vụ đó sẽ được áp dụng.</p>
+    <h2>5. Ủng hộ và liên hệ</h2>
+    <p>Khi bạn ủng hộ qua mã QR chuyển khoản, giao dịch diễn ra trực tiếp trong ứng dụng ngân hàng của bạn; trang không thu thập thông tin thẻ hay tài khoản. Thông tin bạn tự gửi khi nhắn Zalo chỉ dùng để trả lời yêu cầu của bạn và không chia sẻ cho bên khác.</p>
+    <h2>6. Trẻ em</h2>
+    <p>Trang phục vụ cả học sinh. Chúng tôi không cố ý thu thập thông tin cá nhân của trẻ em; phụ huynh nên hướng dẫn con khi sử dụng Internet.</p>
+    <h2>7. Quyền của bạn</h2>
+    <p>Bạn có thể xóa cookie và dữ liệu lưu trên trình duyệt bất cứ lúc nào trong phần cài đặt trình duyệt. Mọi câu hỏi về dữ liệu cá nhân, vui lòng <a href="/lien-he">liên hệ</a> với chúng tôi. Chúng tôi xử lý dữ liệu cá nhân theo quy định pháp luật Việt Nam về bảo vệ dữ liệu cá nhân.</p>
+    <h2>8. Thay đổi chính sách</h2>
+    <p>Chính sách có thể được cập nhật; phiên bản mới nhất luôn được đăng tại trang này.</p>` },
+  "dieu-khoan": { title: "Điều khoản sử dụng", html: `
+    <p class="lg-lead">Khi sử dụng Kho Tiếng Anh Free (tailieu.hoclieuxanh.com), bạn đồng ý với các điều khoản dưới đây. Cập nhật lần cuối: 25/11/2026.</p>
+    <h2>1. Mục đích sử dụng</h2>
+    <p>Tài liệu trên trang được chia sẻ miễn phí cho mục đích <b>học tập và giảng dạy, phi thương mại</b>. Bạn được tải về, in và dùng trong lớp học, ôn tập cá nhân.</p>
+    <h2>2. Những việc không được làm</h2>
+    <ul><li>Bán lại, đăng tải lại tài liệu để thu phí hoặc mạo nhận là tác giả.</li>
+    <li>Sao chép hàng loạt nội dung trang sang website khác khi chưa được đồng ý.</li>
+    <li>Dùng công cụ tự động gây quá tải cho trang hoặc can thiệp vào hoạt động của trang.</li></ul>
+    <h2>3. Bản quyền</h2>
+    <p>Các tài liệu do nhóm Kho Tiếng Anh Free biên soạn thuộc quyền của nhóm. Một số tài liệu khác được sưu tầm, ghi rõ nguồn khi có thể và chỉ dùng cho mục đích học tập. Nếu bạn là tác giả hoặc chủ sở hữu bản quyền và không muốn tài liệu xuất hiện trên trang, vui lòng <a href="/lien-he">liên hệ</a>; chúng tôi sẽ kiểm tra và gỡ bỏ sớm nhất.</p>
+    <h2>4. Miễn trừ trách nhiệm</h2>
+    <p>Chúng tôi cố gắng kiểm tra kỹ đề và đáp án, nhưng không tránh khỏi sai sót. Thầy cô nên xem lại tài liệu trước khi sử dụng. Trang không chịu trách nhiệm về nội dung của các website bên ngoài được liên kết tới.</p>
+    <h2>5. Quảng cáo và ủng hộ</h2>
+    <p>Để duy trì trang miễn phí, trang có thể hiển thị quảng cáo và nhận ủng hộ tự nguyện. Việc ủng hộ là không bắt buộc và không ảnh hưởng đến quyền tải tài liệu.</p>
+    <h2>6. Thay đổi điều khoản</h2>
+    <p>Điều khoản có thể được cập nhật; phiên bản mới nhất luôn được đăng tại trang này. Xem thêm <a href="/chinh-sach-bao-mat">Chính sách bảo mật</a>.</p>` }
+};
+function viewLegal(k) {
+  const p = LEGAL[k]; if (!p) return viewHome();
+  document.title = p.title + " – " + CONFIG.siteName;
+  $("#view").innerHTML = `<div class="lg"><div class="lg-hero"><div class="wrap"><div class="crumb"><a href="/#">Trang chủ</a> › ${p.title}</div><h1>${p.title}</h1></div></div>
+  <div class="wrap"><article class="lg-body">${p.html}</article>
+  <nav class="lg-nav">${Object.keys(LEGAL).map(x => `<a href="/${x}"${x === k ? ' class="on"' : ""}>${LEGAL[x].title}</a>`).join("")}<a href="/ho-tro-giao-vien">Hỗ trợ giáo viên</a></nav></div></div>`;
+  window.scrollTo(0, 0);
+}
+
 /* ---------- Điều hướng ---------- */
 function go(h) { if (location.hash.slice(1) === h) route(); else location.hash = h; }
 function route() {
@@ -848,6 +927,7 @@ function route() {
   document.title = CONFIG.siteName + " – Tài liệu Tiếng Anh miễn phí";
   const h = location.hash.slice(1);
   if (!h && window.__PAGE === "hotro") return viewSupport();
+  if (!h && window.__PAGE && LEGAL[window.__PAGE]) return viewLegal(window.__PAGE);
   if (!h && window.__CAT) { shown = 100000; state.type = "all"; state.series = "all"; return viewCat(window.__CAT); }
   if (!h && window.__DOC) { const d0 = DOCS.find(x => x.id === window.__DOC); if (d0) return viewDoc(d0); return; }
   if (h.startsWith("tl-") && window.__SLUG && window.__SLUG[h.slice(3)]) return location.replace("/tai-lieu/" + window.__SLUG[h.slice(3)]);
