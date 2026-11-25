@@ -574,10 +574,6 @@ function viewHome(anchor) {
     <h1>${esc(CONFIG.heroTitle)}</h1>
     <p>${esc(CONFIG.heroDesc)}</p>
     <form class="searchbar" id="sf"><input id="sq" placeholder="Tìm: lớp 6 Global Success, IELTS, đề thi vào 10…" aria-label="Tìm tài liệu"><button>Tìm</button></form>
-    <div class="quick">
-      ${["lop-6","lop-9","thi-vao-10","thpt-qg","lop-12","game-day-hoc","giao-vien","sang-kien-kinh-nghiem"].filter(k => count(k) && catInfo(k)).map(k => `<a href="/#${k}">${esc(catInfo(k).short)}</a>`).join("")}
-    </div>
-    <div class="trust"><div><b>${DOCS.length}</b>bộ tài liệu</div><div><b>12</b>lớp</div><div><b>${EXAMS_ON.length}</b>chuyên mục thi & kỹ năng</div><div><b>0đ</b>không cần đăng ký</div></div>
   </div></div>
 
   <div class="wrap">
