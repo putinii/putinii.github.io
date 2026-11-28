@@ -52,7 +52,7 @@ const EXAMS = [
   { key: "thpt-qg", name: "Thi tốt nghiệp THPT", icon: "🏆", color: "#e6f6e6", desc: "Đề minh họa, đề thi thử các trường/sở, chuyên đề ôn thi" },
   { key: "hsg", name: "Học sinh giỏi", icon: "🥇", color: "#fff4cc", desc: "Đề thi HSG, chuyên đề nâng cao, đề chuyên" },
   { key: "thi-vao-6", name: "Thi vào lớp 6", icon: "🎒", color: "#ffe6ef", desc: "Đề ôn thi vào lớp 6 trường chất lượng cao" },
-  { key: "dgnl", name: "Đánh giá năng lực", icon: "🧠", color: "#efe6ff", desc: "Đề ôn ĐGNL / ĐGTD phần Tiếng Anh" },
+  { key: "dgnl", name: "Đánh giá năng lực (ĐGNL)", icon: "🧠", color: "#efe6ff", desc: "Đề ôn thi ĐGNL HSA, V-ACT, đánh giá tư duy – trọn bộ và phần Tiếng Anh" },
   { key: "ielts", name: "IELTS", icon: "🌍", color: "#e3ecff", desc: "Du học, xét tuyển & miễn thi ngoại ngữ" },
   { key: "toeic", name: "TOEIC", icon: "💼", color: "#e2f5ef", desc: "Chuẩn đầu ra đại học, tuyển dụng doanh nghiệp" },
   { key: "vstep", name: "VSTEP (B1–C1)", icon: "🇻🇳", color: "#fff0d9", desc: "Chứng chỉ 6 bậc của Bộ GD&ĐT" },
@@ -148,7 +148,7 @@ const RAW = [["1_C_ku9TL3xlQocruyys02WKCtQo8DLmf","Trắc nghiệm tiếng anh 8
 ["13fD5dvYuJ95TIp2lOoBSlcHChuSHIlmm","Lớp 8 - TỔNG HỢP TÀI LIỆU LUYỆN IOE","lop-8","bt","","","2026-01-27"],
 ["16fxhZI3jaILzCWMb-mOAsdo3T_VQ6mvb","Lớp 9 - TỔNG HỢP TÀI LIỆU LUYỆN IOE","lop-9","bt","","","2026-01-27"],
 ["1wq1Jiox9_Hu5-ytEV0wH9jve_ZYa2Nzr","60 ĐỀ MINH HỌA TỐT NGHIỆP THPT 2026","thpt-qg","de","","moi","2026-01-20"],
-["1bAs6obi6mh-jT2uRFjXDECwlcZdyhD4X","92 BÀI ĐỌC ĐƯỢC BIÊN SOẠN THEO CÂU HỎI ĐÁNH GIÁ NĂNG LỰC ĐỌC CHUẨN FORM 2025","thpt-qg","khac","","moi","2026-01-07"],
+["1bAs6obi6mh-jT2uRFjXDECwlcZdyhD4X","92 BÀI ĐỌC ĐƯỢC BIÊN SOẠN THEO CÂU HỎI ĐÁNH GIÁ NĂNG LỰC ĐỌC CHUẨN FORM 2025","dgnl","khac","","moi","2026-01-07"],
 ["1Jr915IF2ywQbAU-RjBs5Ajnt7z5I4b_S","Đề Dự Đoán Đặc Biệt File Word","thpt-qg","de","","word","2026-01-05"],
 ["1mGmI_Aw1csleBI5k7C-NkhXLi6FXr80I","Tuần 1 (Done)","thpt-qg","khac","","","2026-01-05"],
 ["1udr-X1WfRQdjvFR4b25Ya8tSC4VB-DrZ","Tài liệu ôn TN THPT theo tuần cực hay","thpt-qg","bt","","","2026-01-05"],
@@ -247,7 +247,7 @@ const RAW = [["1_C_ku9TL3xlQocruyys02WKCtQo8DLmf","Trắc nghiệm tiếng anh 8
 ["1-tpEqU-sLWFseHKDandfmCBeYFQyJ6cH","BỘ 8 CHUYÊN SÂU","lop-8","khac","","","2025-01-21"],
 ["19sg49FlPr_bfJbiWL8pdfaCzUTWMKHQL","50 ĐỀ ÔN VÀO 10 HÀ NỘI","thi-vao-10","de","","","2025-01-21"],
 ["1tkkZ5vT1tMlIp-2XwqzckK6CTt2YjHQf","CHINH PHỤC NGỮ PHÁP VÀ BÀI TẬP TA9 GLOBAL","lop-9","tv","Global Success","","2025-01-08"],
-["1aWrumfIpuy1Gg5zERcNBpxxqk8xmW0eR","70 ĐỀ ĐÁNH GIÁ NĂNG LỰC 2022","thpt-qg","de","","","2025-01-06"],
+["1aWrumfIpuy1Gg5zERcNBpxxqk8xmW0eR","70 ĐỀ ĐÁNH GIÁ NĂNG LỰC 2022","dgnl","de","","","2025-01-06"],
 ["1IKujUJvRKnBAeZkbd4g2gjTQ6ZC7kpIh","ke-hoach-bai-day-tieng-anh-6-global-success 983","lop-6","khac","Global Success","","2025-01-01"],
 ["1Hls_8iFHCFt0zeC9o6flD1JkqQq4DKQt","BỘ ĐỀ PHÁT TRIỂN MINH HỌA MÔN TIẾNG ANH 2025 (MỚI NHẤT)","thpt-qg","de","","","2024-12-31"],
 ["1_rL3CuVDOUy8Yv1kBbDxQskEWKRUo5Bk","ĐỀ CƯƠNG ÔN TẬP CUỐI HK1 -TA9","lop-9","de","","","2024-12-30"],
@@ -499,7 +499,7 @@ function introOf(d) {
 
 /* ---------- Header / footer ---------- */
 $("#logoName").textContent = CONFIG.siteName;
-$("#nav").innerHTML = `<a href="/#">Trang chủ</a><a href="/#cac-lop">Lớp 1–12</a><a href="/#chung-chi">Chứng chỉ</a><a href="/#thi-vao-10">Thi vào 10</a><a href="/#thpt-qg">Thi THPT</a><a href="/#game-day-hoc">Game</a><a href="/#giao-vien">Giáo viên</a>`;
+$("#nav").innerHTML = `<a href="/#">Trang chủ</a><a href="/#cac-lop">Lớp 1–12</a><a href="/#chung-chi">Chứng chỉ</a><a href="/#thi-vao-10">Thi vào 10</a><a href="/#thpt-qg">Thi THPT</a><a href="/#dgnl">ĐGNL</a><a href="/#game-day-hoc">Game</a><a href="/#giao-vien">Giáo viên</a>`;
 $("#hdDonate").onclick = () => openDonate();
 $("#foot").innerHTML = `
   <div><h4>${esc(CONFIG.siteName)}</h4><p style="margin:0 0 8px">${esc(CONFIG.footer)}</p><p style="margin:0">Báo link hỏng / xin tài liệu: <b style="color:#fff">${esc(CONFIG.contact)}</b></p></div>
