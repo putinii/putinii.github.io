@@ -53,6 +53,7 @@ const EXAMS = [
   { key: "hsg", name: "Học sinh giỏi", icon: "🥇", color: "#fff4cc", desc: "Đề thi HSG, chuyên đề nâng cao, đề chuyên" },
   { key: "thi-vao-6", name: "Thi vào lớp 6", icon: "🎒", color: "#ffe6ef", desc: "Đề ôn thi vào lớp 6 trường chất lượng cao" },
   { key: "dgnl", name: "Đánh giá năng lực (ĐGNL)", icon: "🧠", color: "#efe6ff", desc: "Đề ôn thi ĐGNL HSA, V-ACT, đánh giá tư duy – trọn bộ và phần Tiếng Anh" },
+  { key: "tsa", name: "TSA – Đánh giá tư duy Bách khoa", icon: "🧪", color: "#e3f6ef", desc: "Đề luyện thi Đánh giá tư duy (TSA) ĐH Bách khoa Hà Nội: Toán, Đọc hiểu, Khoa học" },
   { key: "ielts", name: "IELTS", icon: "🌍", color: "#e3ecff", desc: "Du học, xét tuyển & miễn thi ngoại ngữ" },
   { key: "toeic", name: "TOEIC", icon: "💼", color: "#e2f5ef", desc: "Chuẩn đầu ra đại học, tuyển dụng doanh nghiệp" },
   { key: "vstep", name: "VSTEP (B1–C1)", icon: "🇻🇳", color: "#fff0d9", desc: "Chứng chỉ 6 bậc của Bộ GD&ĐT" },
@@ -481,7 +482,7 @@ function audience(d) {
   const m = /^lop-(\d+)$/.exec(d.cat);
   if (m) { const g = +m[1]; return g <= 5 ? "học sinh tiểu học, phụ huynh kèm con học ở nhà và giáo viên" : `học sinh lớp ${g} tự ôn luyện, giáo viên và phụ huynh`; }
   return { "thi-vao-10": "học sinh lớp 9 ôn thi tuyển sinh vào lớp 10", "thpt-qg": "học sinh lớp 12 ôn thi tốt nghiệp THPT", "hsg": "học sinh khá giỏi, đội tuyển HSG và giáo viên bồi dưỡng",
-    "thi-vao-6": "học sinh lớp 5 ôn thi vào lớp 6", "dgnl": "học sinh ôn thi đánh giá năng lực", "luyen-nghe": "người học muốn cải thiện kỹ năng nghe" }[d.cat] || "học sinh, giáo viên và người tự học";
+    "thi-vao-6": "học sinh lớp 5 ôn thi vào lớp 6", "dgnl": "học sinh ôn thi đánh giá năng lực", "tsa": "học sinh ôn thi Đánh giá tư duy (TSA) Bách khoa", "luyen-nghe": "người học muốn cải thiện kỹ năng nghe" }[d.cat] || "học sinh, giáo viên và người tự học";
 }
 function shortOf(d) {
   const t = TYPES[d.type] || TYPES.khac, c = catInfo(d.cat) || {};
@@ -499,7 +500,7 @@ function introOf(d) {
 
 /* ---------- Header / footer ---------- */
 $("#logoName").textContent = CONFIG.siteName;
-$("#nav").innerHTML = `<a href="/#">Trang chủ</a><a href="/#cac-lop">Lớp 1–12</a><a href="/#chung-chi">Chứng chỉ</a><a href="/#thi-vao-10">Thi vào 10</a><a href="/#thpt-qg">Thi THPT</a><a href="/#dgnl">ĐGNL</a><a href="/#game-day-hoc">Game</a><a href="/#giao-vien">Giáo viên</a>`;
+$("#nav").innerHTML = `<a href="/#">Trang chủ</a><a href="/#cac-lop">Lớp 1–12</a><a href="/#chung-chi">Chứng chỉ</a><a href="/#thi-vao-10">Thi vào 10</a><a href="/#thpt-qg">Thi THPT</a><a href="/#dgnl">ĐGNL</a><a href="/#tsa">TSA</a><a href="/#game-day-hoc">Game</a><a href="/#giao-vien">Giáo viên</a>`;
 $("#hdDonate").onclick = () => openDonate();
 $("#foot").innerHTML = `
   <div><h4>${esc(CONFIG.siteName)}</h4><p style="margin:0 0 8px">${esc(CONFIG.footer)}</p><p style="margin:0">Báo link hỏng / xin tài liệu: <b style="color:#fff">${esc(CONFIG.contact)}</b></p></div>
@@ -1011,6 +1012,7 @@ route();
     "hsg": "Ôn thi học sinh giỏi cần nguồn tài liệu nâng cao, có hệ thống và có đáp án để tự kiểm tra.",
     "thi-vao-6": "Thi vào lớp 6 trường chất lượng cao cần làm quen sớm với dạng đề và mức độ khó.",
     "dgnl": "Phần Tiếng Anh trong bài thi đánh giá năng lực có cách ra đề riêng, cần luyện đúng dạng.",
+    "tsa": "Bài thi Đánh giá tư duy (TSA) gồm Toán, Đọc hiểu và Khoa học, cần luyện đúng cấu trúc và tốc độ làm bài.",
     "giao-vien": "Tiết kiệm thời gian soạn bài là điều mọi giáo viên Tiếng Anh đều cần.",
     "game-day-hoc": "Một trò chơi 5 phút đầu giờ có thể làm cả lớp hào hứng suốt tiết học.",
     "luyen-nghe": "Nghe là kỹ năng nhiều bạn ngại nhất, nhưng chỉ cần luyện đều đặn mỗi ngày là tiến bộ rõ.",
